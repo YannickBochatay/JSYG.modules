@@ -1,4 +1,6 @@
 JSYG
 ====
 
-modular library for both html and svg
+modular library for both html and svg.
+
+Not ready yet !
