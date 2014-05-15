@@ -1,0 +1,23 @@
+{
+    "name": "JSYG",
+    "version": "0.1",
+    "authors" : ["Yannick Bochatay"],
+    "description" : "JSYG is a javascript library for both HTML and SVG",
+  	"main": "dist/JSYG.js",
+  	"dependencies": {
+        "jquery": "latest"
+    },
+    "devDependencies": {
+        "qunit": "latest",
+        "requirejs":"latest",
+        "zepto":"latest",
+        "r.js":"latest"
+    },
+    "license": "MIT",
+  	"ignore": ["**/.*"],
+	"keywords": [
+		"svg",
+		"javascript",
+		"library"
+	]
+}
