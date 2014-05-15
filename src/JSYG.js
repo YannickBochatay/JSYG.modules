@@ -28,6 +28,8 @@
 	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 		rsvgLink = /^<(svg:a)\s*\/?>(?:<\/\1>|)$/;
 	
+	var svg = window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg');
+	
 	function JSYG(arg) {
 		
 		if (!(this instanceof JSYG)) return new JSYG(arg);
@@ -277,7 +279,7 @@
 	
 	JSYG.support = {
 			
-		svg : window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg'),
+		svg : svg,
 		
 		classList : {
 			
@@ -295,6 +297,181 @@
 			})()
 		}
 	};
+	
+	(function() {
+		
+		if (!svg || typeof document === "undefined") return false;
+		
+		var defs,use,
+			id = 'rect'+ Math.random().toString().replace( /\D/g, "" );
+		
+		defs = new JSYG('<defs>');
+		defs.appendTo(svg);
+		
+		new JSYG('<rect>')
+		.attr({"id":id,x:10,y:10,width:10,height:10})
+		.appendTo(defs);
+					
+		use = new JSYG('<use>').attr({id:"use",x:10,y:10}).href('#'+id).appendTo(svg);
+					
+		document.body.appendChild(svg);
+					
+		JSYG.support.svgUseBBox = use[0].getBBox().x == 20;
+					
+		JSYG.support.svgUseTransform = use[0].getTransformToElement(svg).e != 0;
+
+		use.remove();
+		defs.remove();			
+		document.body.removeChild(svg);
+		
+	}());
+	
+	
+	
+	JSYG.Point = function(x,y) {
+		
+		if (typeof x === 'object' && y == null) {
+			y = x.y;
+			x = x.x;
+		}
+		
+		this.x = (typeof x == "number") ? x : parseFloat(x);
+		this.y = (typeof y == "number") ? y : parseFloat(y);
+	};
+	
+	JSYG.Point.prototype = {
+			
+		constructor : JSYG.Point,
+		
+		mtx : function(mtx) {
+		
+			if (mtx instanceof JSYG.Matrix) mtx = mtx.mtx;
+			if (!mtx) return new JSYG.Point(this.x,this.y);
+			
+			var point = svg.createSVGPoint();
+			point.x = this.x;
+			point.y = this.y;
+			point = point.matrixTransform(mtx);
+			
+			return new JSYG.Point(point.x,point.y);
+		}
+	};
+	
+	
+	function addTransform(rect,mtx) {
+		
+		if (mtx.a === 1 && mtx.b === 0 && mtx.c === 0 && mtx.d === 1 && mtx.e === 0 && mtx.f === 0) return rect;
+				
+		var hg = new JSYG.Point(0,0).mtx(mtx),
+			hd = new JSYG.Point(rect.width,0).mtx(mtx),
+			bg = new JSYG.Point(0,rect.height).mtx(mtx),
+			bd = new JSYG.Point(rect.width,rect.height).mtx(mtx),
+		
+			xmin = Math.min(hg.x,hd.x,bg.x,bd.x),
+			ymin = Math.min(hg.y,hd.y,bg.y,bd.y);
+						
+		return {
+			left : Math.round(xmin + rect.x),
+			top : Math.round(ymin + rect.y)
+		};	
+	}
+	
+	JSYG.prototype.position = function() {
+		
+		if (!this.isSVG()) return $.fn.position.call(this);
+		
+		var dim,box,
+			tag = this[0].tagName;
+			
+		if (tag == 'svg') {
+			
+			if (this.parent().isSVG()) {
+				
+				dim = {
+					left : parseFloat(this.attr('x')) || 0,
+					top : parseFloat(this.attr('y')) || 0
+				};
+			}
+			else dim = $.fn.position.call(this);
+		}
+		else {
+			
+			box = this[0].getBBox();
+			
+			dim = { //box est en lecture seule
+				left : box.x,
+				top : box.y
+			};
+			
+			if (tag === 'use' && !JSYG.support.svgUseBBox) {
+				//bbox fait alors référence à l'élément source donc il faut ajouter les attributs de l'élément lui-même
+				dim.left += parseFloat(this.attr('x'))  || 0;
+				dim.top += parseFloat(this.attr('y')) || 0;
+			}
+		}
+		
+		return dim;
+	};
+	
+	JSYG.prototype.offset = function(coordinates) {
+		
+		var x,y,box,mtx,point,offset,jWin;
+		
+		if (!coordinates) {
+			
+			if (!this.isSVG()) return $.fn.position.call(this);
+			
+			if (this[0].tagName == 'svg') {
+				
+				x = parseFloat(this.css("left") || this.attr('x')) || 0;
+				y = parseFloat(this.css("top") || this.attr('y')) || 0;
+				
+				box = this.attr("viewBox");
+				box && this.attrRemove("viewBox");
+				
+				mtx = this[0].getScreenCTM();
+				
+				box && this.attr("viewBox",box);
+																									
+				point = new JSYG.Point(x,y).mtx(mtx);
+								
+				offset = {
+					left : point.x,
+					top : point.y
+				};
+				
+			} else {
+			
+				if (this.rotate() == 0) {
+					
+					//sans rotation, cette méthode est meilleure car getBoundingClientRect
+					//tient compte de l'épaisseur de tracé (stroke-width)
+					
+					mtx = this[0].getScreenCTM();
+					
+					point = new JSYG.Point( this.position() ).mtx(mtx);
+					
+					offset = {
+						left : point.x,
+						top : point.y
+					};
+				
+				}
+				else offset = this[0].getBoundingClientRect();
+			}
+						
+			jWin = new JSYG(window);
+			
+			offset = {
+				left : offset.left + jWin.scrollLeft() - document.documentElement.clientLeft,
+				top : offset.top + jWin.scrollTop() - document.documentElement.clientTop
+			};
+			
+			if (JSYG.support.addTransfForBoundingRect) offset = addTransform(offset,this.getMtx()); //FF
+			
+		}
+	};
+	
 	
 	JSYG.prototype.addClass = function(name) {
 		
