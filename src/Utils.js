@@ -99,7 +99,107 @@
 	 */
 	JSYG.base64decode  = function(input) { return JSYG.utf8decode( window.atob(input) ); };
 	
+	/**
+	 * Encodage d'une chaîne au format UTF8
+	 * @param string
+	 * @returns {String}
+	 */
+	JSYG.utf8encode = function(string) {
+		//Johan Sundstr�m
+		return window.unescape( JSYG.urlencode( string ) );
+	};
 	
+	/**
+	 * Décodage d'une chaîne UTF8 en ISO-8859-1
+	 * @param string
+	 * @returns {String}
+	 */
+	JSYG.utf8decode = function(string) {
+		//Johan Sundstr�m
+		return JSYG.urldecode( window.escape(string) );
+	};
+	
+	/**
+	 * Détecte si la chaîne est encodée en UTF8 ou non
+	 * @param string
+	 * @returns {Boolean}
+	 * @link https://github.com/wayfind/is-utf8
+	 */
+	JSYG.isUtf8 = function(string) {
+		
+	    var i = 0;
+	    while(i < string.length)
+	    {
+	        if(     (// ASCII
+	                    string[i] == 0x09 ||
+	                    string[i] == 0x0A ||
+	                    string[i] == 0x0D ||
+	                    (0x20 <= string[i] && string[i] <= 0x7E)
+	                )
+	          ) {
+	              i += 1;
+	              continue;
+	          }
+
+	        if(     (// non-overlong 2-byte
+	                    (0xC2 <= string[i] && string[i] <= 0xDF) &&
+	                    (0x80 <= string[i+1] && string[i+1] <= 0xBF)
+	                )
+	          ) {
+	              i += 2;
+	              continue;
+	          }
+
+	        if(     (// excluding overlongs
+	                    string[i] == 0xE0 &&
+	                    (0xA0 <= string[i + 1] && string[i + 1] <= 0xBF) &&
+	                    (0x80 <= string[i + 2] && string[i + 2] <= 0xBF)
+	                ) ||
+	                (// straight 3-byte
+	                 ((0xE1 <= string[i] && string[i] <= 0xEC) ||
+	                  string[i] == 0xEE ||
+	                  string[i] == 0xEF) &&
+	                 (0x80 <= string[i + 1] && string[i+1] <= 0xBF) &&
+	                 (0x80 <= string[i+2] && string[i+2] <= 0xBF)
+	                ) ||
+	                (// excluding surrogates
+	                 string[i] == 0xED &&
+	                 (0x80 <= string[i+1] && string[i+1] <= 0x9F) &&
+	                 (0x80 <= string[i+2] && string[i+2] <= 0xBF)
+	                )
+	          ) {
+	              i += 3;
+	              continue;
+	          }
+
+	        if(     (// planes 1-3
+	                    string[i] == 0xF0 &&
+	                    (0x90 <= string[i + 1] && string[i + 1] <= 0xBF) &&
+	                    (0x80 <= string[i + 2] && string[i + 2] <= 0xBF) &&
+	                    (0x80 <= string[i + 3] && string[i + 3] <= 0xBF)
+	                ) ||
+	                (// planes 4-15
+	                 (0xF1 <= string[i] && string[i] <= 0xF3) &&
+	                 (0x80 <= string[i + 1] && string[i + 1] <= 0xBF) &&
+	                 (0x80 <= string[i + 2] && string[i + 2] <= 0xBF) &&
+	                 (0x80 <= string[i + 3] && string[i + 3] <= 0xBF)
+	                ) ||
+	                (// plane 16
+	                 string[i] == 0xF4 &&
+	                 (0x80 <= string[i + 1] && string[i + 1] <= 0x8F) &&
+	                 (0x80 <= string[i + 2] && string[i + 2] <= 0xBF) &&
+	                 (0x80 <= string[i + 3] && string[i + 3] <= 0xBF)
+	                )
+	          ) {
+	              i += 4;
+	              continue;
+	          }
+
+	        return false;
+	    }
+
+	    return true;
+	};
 	
 	/**
 	 * Execute une fonction sur le noeud et r�cursivement sur tous les descendants (nodeType==1 uniquement)
