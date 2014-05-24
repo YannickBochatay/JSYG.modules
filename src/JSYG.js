@@ -77,6 +77,11 @@
 	 * Liste des balises SVG
 	 */
 	JSYG.svgTags = ['altGlyph','altGlyphDef','altGlyphItem','animate','animateColor','animateMotion','animateTransform','circle','clipPath','color-profile','cursor','definition-src','defs','desc','ellipse','feBlend','feColorMatrix','feComponentTransfer','feComposite','feConvolveMatrix','feDiffuseLighting','feDisplacementMap','feDistantLight','feFlood','feFuncA','feFuncB','feFuncG','feFuncR','feGaussianBlur','feImage','feMerge','feMergeNode','feMorphology','feOffset','fePointLight','feSpecularLighting','feSpotLight','feTile','feTurbulence','filter','font','font-face','font-face-format','font-face-name','font-face-src','font-face-uri','foreignObject','g','glyph','glyphRef','hkern','image','line','linearGradient','marker','mask','metadata','missing-glyph','mpath','path','pattern','polygon','polyline','radialGradient','rect','set','stop','style','svg','switch','symbol','text','textPath','title','tref','tspan','use','view','vkern'];
+	/**
+	 * Liste des elements SVG pouvant utiliser l'attribut viewBox
+	 */
+	JSYG.svgViewBoxTags = ['svg','symbol','image','marker','pattern','view'];
+
 	
 	JSYG.ns = NS;
 	
@@ -86,7 +91,7 @@
 	
 	JSYG.prototype.isSVGroot = function() {
 		if (this[0].tagName != 'svg') return false;
-		var parent = this.parent();
+		var parent = new JSYG(this[0]).parent();
 		return parent.length && !parent.isSVG();
 	};
 		
@@ -134,7 +139,14 @@
 				$this.attr(name,value.call(this,j,$this.attr('href')));
 			});
 		}
-		else if (typeof name == "string" && name == "href") return xlinkHref.call(this,value);
+		else if (name == "href") return xlinkHref.call(this,value);
+		else if (name == "viewBox" || name== "viewbox"){
+			return this.each(function() {
+				if (JSYG.svgViewBoxTags.indexOf(this.tagName) !=-1)
+					this.setAttribute("viewBox",value);
+				console.log(value);
+			});
+		}
 		else return $.fn.attr.apply(this,arguments);
 	};
 	
@@ -269,9 +281,9 @@
 			var $this = new JSYG(this),
 				isSVG = $this.isSVG();
 			
-			if (isSVG && JSYG.svgCssProperties.indexOf(cssProp)) {
+			if (isSVG && JSYG.svgCssProperties.indexOf(cssProp) != -1) {
 				this.setAttribute(cssProp,val);
-				this.style.jsProp = val;
+				this.style[jsProp] = val;
 			}
 			else $.fn.css.call($this,prop,val);
 		});
@@ -312,7 +324,7 @@
 		.attr({"id":id,x:10,y:10,width:10,height:10})
 		.appendTo(defs);
 					
-		use = new JSYG('<use>').attr({id:"use",x:10,y:10}).href('#'+id).appendTo(svg);
+		use = new JSYG('<use>').attr({id:"use",x:10,y:10,href:'#'+id}).appendTo(svg);
 					
 		document.body.appendChild(svg);
 					
@@ -345,7 +357,7 @@
 		
 		mtx : function(mtx) {
 		
-			if (mtx instanceof JSYG.Matrix) mtx = mtx.mtx;
+			if (JSYG.Matrix && (mtx instanceof JSYG.Matrix)) mtx = mtx.mtx;
 			if (!mtx) return new JSYG.Point(this.x,this.y);
 			
 			var point = svg.createSVGPoint();
@@ -356,25 +368,6 @@
 			return new JSYG.Point(point.x,point.y);
 		}
 	};
-	
-	
-	function addTransform(rect,mtx) {
-		
-		if (mtx.a === 1 && mtx.b === 0 && mtx.c === 0 && mtx.d === 1 && mtx.e === 0 && mtx.f === 0) return rect;
-				
-		var hg = new JSYG.Point(0,0).mtx(mtx),
-			hd = new JSYG.Point(rect.width,0).mtx(mtx),
-			bg = new JSYG.Point(0,rect.height).mtx(mtx),
-			bd = new JSYG.Point(rect.width,rect.height).mtx(mtx),
-		
-			xmin = Math.min(hg.x,hd.x,bg.x,bd.x),
-			ymin = Math.min(hg.y,hd.y,bg.y,bd.y);
-						
-		return {
-			left : Math.round(xmin + rect.x),
-			top : Math.round(ymin + rect.y)
-		};	
-	}
 	
 	JSYG.prototype.position = function() {
 		
@@ -418,21 +411,27 @@
 		var x,y,box,mtx,point,offset,jWin;
 		
 		if (!coordinates) {
-			
-			if (!this.isSVG()) return $.fn.position.call(this);
-			
-			if (this[0].tagName == 'svg') {
+									
+			if (!this.isSVG()) return $.fn.offset.call(this);
+						
+			if (this[0].tagName == "svg") {
 				
-				x = parseFloat(this.css("left") || this.attr('x')) || 0;
-				y = parseFloat(this.css("top") || this.attr('y')) || 0;
-				
+				if (this.isSVGroot()) {
+					x = 0;
+					y = 0;
+				}
+				else {
+					x = parseFloat(this.attr('x')) || 0;
+					y = parseFloat(this.attr('y')) || 0;
+				}
+										
 				box = this.attr("viewBox");
 				box && this.attrRemove("viewBox");
 				
 				mtx = this[0].getScreenCTM();
-				
+								
 				box && this.attr("viewBox",box);
-																									
+																		
 				point = new JSYG.Point(x,y).mtx(mtx);
 								
 				offset = {
@@ -440,35 +439,15 @@
 					top : point.y
 				};
 				
-			} else {
-			
-				if (this.rotate() == 0) {
-					
-					//sans rotation, cette méthode est meilleure car getBoundingClientRect
-					//tient compte de l'épaisseur de tracé (stroke-width)
-					
-					mtx = this[0].getScreenCTM();
-					
-					point = new JSYG.Point( this.position() ).mtx(mtx);
-					
-					offset = {
-						left : point.x,
-						top : point.y
-					};
-				
-				}
-				else offset = this[0].getBoundingClientRect();
 			}
-						
-			jWin = new JSYG(window);
-			
+			else offset = this[0].getBoundingClientRect();
+												
 			offset = {
-				left : offset.left + jWin.scrollLeft() - document.documentElement.clientLeft,
-				top : offset.top + jWin.scrollTop() - document.documentElement.clientTop
+				left : offset.left + window.pageXOffset - document.documentElement.clientLeft,
+				top : offset.top + window.pageYOffset - document.documentElement.clientTop
 			};
 			
-			if (JSYG.support.addTransfForBoundingRect) offset = addTransform(offset,this.getMtx()); //FF
-			
+			return offset;
 		}
 	};
 	

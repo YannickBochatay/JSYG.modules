@@ -3,7 +3,8 @@ require.config({
 	    "jquery": '../bower_components/jquery/dist/jquery',
 	    "zepto": '../bower_components/zepto/zepto',
 	    "jsyg": '../src/JSYG',
-	 }
+	 },
+	 urlArgs: "bust=" + new Date()
 });
 
 require(["jquery","jsyg"],function(jQuery,JSYG) {
@@ -134,6 +135,44 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		equal( a.attr("href") , url, "Attributs sous forme de fonction sur éléments HTML" );
 		equal( aSVG.attr("href") , url, "Attribut sous forme de fonction sur éléments SVG" );
 		
+	});
+	
+	
+	test("Gestion du positionnement",function() {
+		
+		var svg = new JSYG('<svg>')
+		.css({
+			"position":"absolute",
+			"top":50,
+			"left":50,
+			"width":500,
+			"height":500
+		})
+		.appendTo(container);
+		
+		var rect = new JSYG('<rect>')
+		.attr({
+			width:100,
+			height:100,
+			x:50,
+			y:50
+		})
+		.appendTo('svg');
+		
+		var div = new JSYG('<div>')
+		.css({
+			position:"absolute",
+			top:50,
+			left:50
+		})
+		.appendTo(container);
+		
+		var offsetParent = $(container).css("position","relative").offset();
+				
+		equal( svg.offset() , {top:offsetParent.top+50,left:offsetParent.left+50}, "Position des balises SVG inline dans la page" );
+		equal( rect.offset() , {top:offsetParent.top+100,left:offsetParent.left+100}, "Position des éléments SVG dans la page" );
+		equal( div.offset() , {top:offsetParent.top+50,left:offsetParent.left+50}, "Position des éléments HTML dans la page" );
+		equal( offsetParent , {top:offsetParent.top,left:offsetParent.left}, "Position des éléments HTML dans la page" );
 	});
 	
 	

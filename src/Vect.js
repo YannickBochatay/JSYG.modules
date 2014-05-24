@@ -1,6 +1,8 @@
 (function() {
 	
 	"use strict";
+
+	var svg = JSYG.support.svg;
 	
 	/**
 	 * Constructeur de vecteurs.

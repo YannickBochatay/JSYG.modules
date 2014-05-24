@@ -1,7 +1,7 @@
 JSYG.require("Style","Transform","Vect",function() {
 	
 	"use strict";
-		
+	
 	//firefox ne répercute pas les transformations 2D d'éléments HTML sur la méthode getBoundingClientRect
 	JSYG.support.addTransfForBoundingRect = (function() {
 				
@@ -22,7 +22,7 @@ JSYG.require("Style","Transform","Vect",function() {
 		return false;
 		
 	})();
-	
+		
 	(function() {
 		
 		if (!JSYG.support.svg || typeof document === "undefined") return false;
@@ -38,7 +38,7 @@ JSYG.require("Style","Transform","Vect",function() {
 		.attr({"id":id,x:10,y:10,width:10,height:10})
 		.appendTo(defs);
 					
-		use = new JSYG('<use>').attr({id:"use",x:10,y:10}).href('#'+id).appendTo(svg);
+		use = new JSYG('<use>').attr({id:"use",x:10,y:10,href:'#'+id}).appendTo(svg);
 					
 		document.body.appendChild(svg);
 					
@@ -51,8 +51,7 @@ JSYG.require("Style","Transform","Vect",function() {
 		document.body.removeChild(svg);
 		
 	}());
-	
-	
+		
 	function addTransform(rect,mtx) {
 		
 		if (!mtx.isIdentity()) {
@@ -106,7 +105,6 @@ JSYG.require("Style","Transform","Vect",function() {
 		return returnValue;
 	}
 	
-	
 	/**
 	 * Récupération des dimensions de l'élément sous forme d'objet avec les propriétés x,y,width,height.
 	 * Pour les éléments HTML, Les dimensions prennent en compte padding, border mais pas margin.<br/><br/>
@@ -127,7 +125,7 @@ JSYG.require("Style","Transform","Vect",function() {
 			x,y,width,height,
 			viewBox,jWin,ref,dimRef,
 			mtx,
-			tag = this.getTag();
+			tag = this[0].tagName;
 		
 		if (node.nodeType == 1 && this.css("display") == "none") {
 			
@@ -207,8 +205,8 @@ JSYG.require("Style","Transform","Vect",function() {
 				
 				x = parseFloat(this.css("left") || this.attr('x')) || 0;
 				y = parseFloat(this.css("top") || this.attr('y')) || 0;
-				width = this.cssNum("width");
-				height = this.cssNum("height");
+				width = parseFloat(this.css("width"));
+				height = parseFloat(this.css("height"));
 				
 				viewBox = this.attr("viewBox");
 				viewBox && this.attrRemove("viewBox");
@@ -346,7 +344,7 @@ JSYG.require("Style","Transform","Vect",function() {
 	 * se comporte plus comme un conteneur (du moins avec firefox). 
 	 */
 	function isSVGImage(elmt) {
-		return elmt.getTag() == 'image' && /(image\/svg\+xml|\.svg$)/.test(this.href());
+		return elmt[0].tagName == 'image' && /(image\/svg\+xml|\.svg$)/.test(elmt.href());
 	};
 	
 	
@@ -417,7 +415,7 @@ JSYG.require("Style","Transform","Vect",function() {
 				return;
 			}
 			
-			tag = $this.getTag();
+			tag = this.tagName;
 			
 			if ('from' in opt) {
 				
@@ -611,8 +609,8 @@ JSYG.require("Style","Transform","Vect",function() {
 
 						position = $this.css('position');
 						
-						decx = $this.cssNum('marginLeft') || 0;
-						decy = $this.cssNum('marginTop') || 0;
+						decx = parseFloat($this.css('marginLeft') || 0);
+						decy = parseFloat($this.css('marginTop') || 0);
 								
 						if ('x' in opt || 'y' in opt) {
 													

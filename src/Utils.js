@@ -283,34 +283,36 @@
 		
 		this.each(function() {
 			
-			var $this = new JSYG(this);
-			
-			if ($this.getTag()!= 'svg') throw new Error("la méthode viewBox ne s'applique qu'aux conteneurs svg.");
+			if (this.tagName!= 'svg') throw new Error("la méthode viewBox ne s'applique qu'aux conteneurs svg.");
 		
-			var viewBox = this.viewBox.baseVal || {}; 
+			var viewBoxInit = this.viewBox.baseVal;
+			var viewBox = viewBoxInit || {} ;
 			
 			if (dim == null) {
 				
 				val = {
 					x : viewBox.x || 0,
 					y : viewBox.y || 0,
-					width : viewBox.width || parseFloat($this.cssNum('width')),
-					height : viewBox.height || parseFloat($this.cssNum('height'))
+					width : viewBox.width || parseFloat(this.getAttribute('width')),
+					height : viewBox.height || parseFloat(this.getAttribute('height'))
 				};
 				
 				return false;
 			}
 			else {
+								
 				for (var n in dim) {
-					if (n in viewBox) viewBox[n] = dim[n];
+					if (["x","y","width","height"].indexOf(n)!=-1) viewBox[n] = dim[n];
 				}
 			}
+			
+			if (!viewBoxInit) this.setAttribute('viewBox', viewBox.x+" "+viewBox.y+" "+viewBox.width+" "+viewBox.height);
 			
 		});
 		
 		return val ? val : this;
 	};
-	
+		
 	/**
 	 * Renvoit la matrice de transformation équivalente à la viewbox
 	 */
