@@ -173,38 +173,10 @@
 		
 		root = root || window.document;
 
-		
-		if (root.querySelectorAll) {
-			try { liste = root.querySelectorAll(arg); }
-			catch(e) { throw new Error(arg+" : sélecteur incorrect."); }
-		}
-		else if (window.Sizzle) liste = Sizzle(arg,root);
-		else throw new Error("Il faut inclure Sizzle.js pour ce navigateur");
+		try { liste = root.querySelectorAll(arg); }
+		catch(e) { throw new Error(arg+" : sélecteur incorrect."); }
 						
 		return JSYG.makeArray(liste);
-	}
-	
-	/**
-	 * récupère un objet DOM à partir d'un sélecteur css.
-	 * @param arg sélecteur css
-	 * @param root optionnel, le noeud parent à partir duquel on fait la recherche
-	 * @returns {Object} : objet JSYG
-	 */
-	function querySelector(arg,root) {
-				
-		var elmt;
-		
-		root = root || window.document;
-		
-		if (root.querySelector) elmt = root.querySelector(arg);
-		else if (window.Sizzle) {
-			elmt = Sizzle(arg,root);
-			if (!elmt || elmt.length === 0) return null;
-			elmt = elmt[0];
-		}
-		else throw new Error("Il faut inclure Sizzle.js pour ce navigateur");
-		
-		return elmt;
 	}
 	
 	/**
@@ -245,15 +217,14 @@
 	 * On peut sortir de la boucle en renvoyant false.
 	 * Dans la fonction de rappel, this fait référence (par défaut) à l'élément DOM de la collection,
 	 * et le premier argument est l'indice de l'élément dans la collection.
-	 * @param callback fonction de rappel
-	 * @param jsynObj si true this dans la fonction ne fait plus référence à l'objet DOM mais à l'objet JSYG de l'élément 
+	 * @param callback fonction de rappel 
 	 * @returns {JSYG}
 	 */
-	JSYG.prototype.each = function(callback,jsynObj) {
+	JSYG.prototype.each = function(callback) {
 						
 		var resul;
 		for (var i=0,N=this.length;i<N;i++) {
-			resul = callback.call(jsynObj ? new JSYG(this[i]) : this[i],i,this[i]);
+			resul = callback.call(this[i],i,this[i]);
 			if (resul === false) break;
 		}
 		return this;
@@ -1121,7 +1092,6 @@
 		if (!element || element.nodeType !== 1) return false;
 		
 		if (matchesSelector) return element[matchesSelector](selector);
-		else if (window.Sizzle) return Sizzle.matchesSelector(element,selector);
 		else return querySelectorAll(selector,element.parentNode).indexOf(element) !== -1;
 	}
 	
