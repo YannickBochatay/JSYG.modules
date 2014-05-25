@@ -64,7 +64,7 @@
 			}
 		}
 				
-		$.merge(this, array ? array : $(arg) );
+		$.merge(this, array ? array : $(arg,context) );
 				
 		return this;
 	};
