@@ -30,10 +30,14 @@
 	
 	var svg = window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg');
 	
-	function JSYG(arg) {
+	function JSYG(arg,context) {
 		
-		for (var n in this) {
-			if (this.hasOwnProperty(n)) return new JSYG(arg);
+		if (!(this instanceof JSYG)) return new JSYG(arg,context);
+		else {
+			//pour les appels à this.constructor() dans jQuery sans mettre le merdier
+			for (var n in this) {
+				if (this.hasOwnProperty(n)) return new JSYG(arg,context);
+			}
 		}
 		
 		var array = null, ret;
