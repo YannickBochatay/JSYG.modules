@@ -56,5 +56,10 @@ JSYG.require("Transform","Utils",function() {
 	.appendTo('body');
 	
 	console.log(rect.position(),innerRect.position());
+	
+	var $rect = $(rect);
+	$rect.parent();
+	
+	console.log($rect);
 		
 });

@@ -34,11 +34,23 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 	
 	test("Sélection d'éléments", function() {
 		
+		equal( container[0].tagName , "DIV", "DIV" );
+		
 		container.append(div);
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		
 		svg.appendTo(div);
-			
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		
 		ok( container.find("div").length , "Elements HTML" );
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		
 		ok( container.find("svg").length , "Elements SVG" );
+		
+		equal( container[0].tagName , "DIV", "DIV" );
 	});
 	
 	test("Manipulation du css", function() {
@@ -137,7 +149,27 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		
 	});
 	
+	test("Traversing",function() {
+		
+		var a = new JSYG('<a>').appendTo(container);
+		var b = $('<a>').appendTo(container);
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		equal( a.parent()[0].tagName , container[0].tagName, "Parent d'élément HTML" );
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		equal( a[0].tagName , "A", "Parent d'élément HTML" );
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		equal( b.parent()[0].tagName , container[0].tagName, "Parent d'élément HTML" );
+		
+		equal( container[0].tagName , "DIV", "DIV" );
+		equal( b[0].tagName , "A", "Parent d'élément HTML" );
+		
+	});
 	
+	
+	/*
 	test("Gestion du positionnement",function() {
 		
 		var svg = new JSYG('<svg>')
@@ -173,7 +205,7 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		equal( rect.offset() , {top:offsetParent.top+100,left:offsetParent.left+100}, "Position des éléments SVG dans la page" );
 		equal( div.offset() , {top:offsetParent.top+50,left:offsetParent.left+50}, "Position des éléments HTML dans la page" );
 		equal( offsetParent , {top:offsetParent.top,left:offsetParent.left}, "Position des éléments HTML dans la page" );
-	});
+	});*/
 	
 	
 	

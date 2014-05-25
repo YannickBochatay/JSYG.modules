@@ -32,7 +32,9 @@
 	
 	function JSYG(arg) {
 		
-		if (!(this instanceof JSYG)) return new JSYG(arg);
+		for (var n in this) {
+			if (this.hasOwnProperty(n)) return new JSYG(arg);
+		}
 		
 		var array = null, ret;
 		
@@ -52,10 +54,8 @@
 						
 					ret = rsingleTag.exec(arg);
 					
-					if (ret) {
-						if (JSYG.svgTags.indexOf(ret[1]) !== -1) array = [ document.createElementNS(NS.svg , ret[1]) ];
-					}
-					
+					if (ret && JSYG.svgTags.indexOf(ret[1]) !== -1)
+						array = [ document.createElementNS(NS.svg , ret[1]) ];					
 				}
 			}
 		}
@@ -204,7 +204,7 @@
 					
 					elmt = this.parentNode;
 					
-					while (elmt && (elmt.tagName!='svg' || arg == "farthest")) {
+					while (elmt && (arg == "farthest" || JSYG.svgViewBoxTags.indexOf(elmt.tagName)==-1)) {
 						elmt = elmt.parentNode;
 						if (elmt.tagName == "svg") farthest = elmt;
 					}
@@ -234,6 +234,13 @@
 	
 	function camelize(str) {
 		return str.replace(rDash,function(str,p1){ return p1.toUpperCase();});
+	}
+	
+	function getSVGcssPropName(cssProp) {
+		
+		if (cssProp == "background-color" || cssProp == "color") return "fill";
+		else if (cssProp == "border-color") return "stroke";
+		else if (cssProp == "border-width") return "stroke-width";
 	}
 	
 	JSYG.prototype.css = function(prop,val) {
@@ -281,9 +288,13 @@
 			var $this = new JSYG(this),
 				isSVG = $this.isSVG();
 			
-			if (isSVG && JSYG.svgCssProperties.indexOf(cssProp) != -1) {
-				this.setAttribute(cssProp,val);
-				this.style[jsProp] = val;
+			if (isSVG) {
+								
+				if (JSYG.svgCssProperties.indexOf(cssProp) != -1) {
+					this.setAttribute(cssProp,val);
+					this.style[jsProp] = val;
+				}
+				
 			}
 			else $.fn.css.call($this,prop,val);
 		});
@@ -635,7 +646,7 @@
 		
 		return this;
 	};
-	
+		
 	if (global) window.JSYG = JSYG;
 	
 	return JSYG;
