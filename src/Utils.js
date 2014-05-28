@@ -100,6 +100,24 @@
 	JSYG.base64decode  = function(input) { return JSYG.utf8decode( window.atob(input) ); };
 	
 	/**
+	* Formate une chaîne pour transmission par chaîne de requête
+	* @param str chaîne à formater
+	* @returns {String}
+	*/
+	JSYG.urlencode = function(str) {
+		return window.encodeURIComponent(str);
+	};
+	
+	/**
+	* Decode une chaîne apr�s transmission par chaîne de requête
+	* @param str chaîne à d�coder
+	* @returns {String}
+	*/
+	JSYG.urldecode = function(str) {
+		return window.decodeURIComponent(str);
+	};
+	
+	/**
 	 * Encodage d'une chaîne au format UTF8
 	 * @param string
 	 * @returns {String}
