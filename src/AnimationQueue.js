@@ -370,4 +370,4 @@ JSYG.require("Animation","StdConstruct",function() {
 		}
 	};
 	
-}();
+});
