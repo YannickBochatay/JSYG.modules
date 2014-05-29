@@ -423,7 +423,7 @@
 	
 	JSYG.prototype.offset = function(coordinates) {
 		
-		var x,y,box,mtx,point,offset,jWin;
+		var x,y,box,mtx,point,offset;
 		
 		if (!coordinates) {
 									
