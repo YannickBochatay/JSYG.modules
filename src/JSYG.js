@@ -130,7 +130,7 @@
 	}
 	
 	JSYG.prototype.attr = function(name,value) {
-		
+				
 		if ($.isPlainObject(name)) {
 			
 			for (var n in name) this.attr(n,name[n]);
@@ -145,10 +145,12 @@
 		}
 		else if (name == "href") return xlinkHref.call(this,value);
 		else if (name == "viewBox" || name== "viewbox"){
+			
+			if (value === undefined) return this[0].getAttribute("viewBox");
+			
 			return this.each(function() {
 				if (JSYG.svgViewBoxTags.indexOf(this.tagName) !=-1)
-					this.setAttribute("viewBox",value);
-				console.log(value);
+					this.setAttribute("viewBox",value);					
 			});
 		}
 		else return $.fn.attr.apply(this,arguments);
@@ -199,27 +201,37 @@
 				farthest = null,
 				$this = new JSYG(this);
 			
-			if ($this.isSVG() && !$this.isSVGroot()) {
+			if ($this.isSVG()) {
 				
-				if (arg === 'farthest') elmt = this.farthestViewportElement;
-				else elmt = this.nearestViewportElement;
-				
-				if (!elmt) { //les éléments non tracés (dans une balise defs) ne renvoient rien, par simplicité on renvoit la balise svg parente
+				if (!$this.isSVGroot()) {
+					
+					if (arg === 'farthest') elmt = this.farthestViewportElement;
+					else elmt = this.nearestViewportElement;
+					
+					if (!elmt) { //les éléments non tracés (dans une balise defs) ne renvoient rien, par simplicité on renvoit la balise svg parente
+						
+						elmt = this.parentNode;
+						
+						while (elmt && (arg == "farthest" || JSYG.svgViewBoxTags.indexOf(elmt.tagName)==-1)) {
+							elmt = elmt.parentNode;
+							if (elmt.tagName == "svg") farthest = elmt;
+						}
+						
+						if (farthest) elmt = farthest;
+					}
+				}
+				else {
 					
 					elmt = this.parentNode;
-					
-					while (elmt && (arg == "farthest" || JSYG.svgViewBoxTags.indexOf(elmt.tagName)==-1)) {
-						elmt = elmt.parentNode;
-						if (elmt.tagName == "svg") farthest = elmt;
-					}
-					
-					if (farthest) elmt = farthest;
+					if (elmt.nodeName != "html" && new JSYG(elmt).css("position") == "static")
+						elmt = $.fn.offsetParent.call($this)[0];
 				}
+				
 			}
 			else {
 			
 				if (arg === 'farthest') elmt = document.body;
-				else elmt = $.fn.offsetParent.call($this);
+				else elmt = $.fn.offsetParent.call($this)[0];
 			}
 			
 			elmt && tab.push(elmt);
@@ -289,18 +301,12 @@
 		
 		return this.each(function() {
 			
-			var $this = new JSYG(this),
-				isSVG = $this.isSVG();
+			var $this = new JSYG(this);
 			
-			if (isSVG) {
-								
-				if (JSYG.svgCssProperties.indexOf(cssProp) != -1) {
-					this.setAttribute(cssProp,val);
-					this.style[jsProp] = val;
-				}
-				
-			}
-			else $.fn.css.call($this,prop,val);
+			if ($this.isSVG() && JSYG.svgCssProperties.indexOf(cssProp) != -1)
+				this.setAttribute(cssProp,val);
+			
+			$.fn.css.call($this,prop,val);
 		});
 	};
 	
@@ -444,7 +450,7 @@
 				box && this.attrRemove("viewBox");
 				
 				mtx = this[0].getScreenCTM();
-								
+							
 				box && this.attr("viewBox",box);
 																		
 				point = new JSYG.Point(x,y).mtx(mtx);
