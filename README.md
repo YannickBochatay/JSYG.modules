@@ -5,7 +5,7 @@ Modular library for both html and svg.
 
 **Not ready yet.**
 
-If you only want jQuery to work with SVG, just include this [file](https://raw.githubusercontent.com/YannickBochatay/JSYG/master/src/JSYG.js").
+If you only want jQuery to work with SVG, just include this [file](https://raw.githubusercontent.com/YannickBochatay/JSYG/master/src/JSYG.js).
 
 Then you can create, measure, manipulate SVG elements as you do with HTML.
 
