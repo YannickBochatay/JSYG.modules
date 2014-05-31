@@ -16,8 +16,10 @@
 	else factory(root,$,true);
 
 }(this, function(window, $, global) {
-		
+			
 	'use strict';
+	
+	if (!$) throw new Error("jQuery is needed");
 	
 	var NS = {
 		html : 'http://www.w3.org/1999/xhtml',
@@ -656,7 +658,7 @@
 		
 		return this;
 	};
-		
+			
 	if (global) window.JSYG = JSYG;
 	
 	return JSYG;

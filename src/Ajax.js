@@ -1,4 +1,4 @@
-JSYG.require("StdContruct",function() {
+require("StdContruct",function() {
 	
 	"use strict";
 	
@@ -232,7 +232,8 @@ JSYG.require("StdContruct",function() {
 		
 		this.trigger('load',req,content);
 		
-		if (req.status >= 200 && req.status < 300 || req.status === 304) {
+			//local files
+		if (req.status == 0 || req.status >= 200 && req.status < 300 || req.status === 304) {
 			
 			this.trigger('success',req,content);
 			resolve(content);

@@ -1,16 +1,12 @@
 //tiré de https://github.com/jakearchibald/es6-promise
-(function(root, factory) {
-
-	if (typeof define == 'function' && define.amd) {
-		
-		define(['jsyg'], function(JSYG) {
-			return factory(root,JSYG);
-		});
+define(["JSYG"], function(JSYG) {
+	
+	var root = this;
+	
+	if (root.Promise) {
+		JSYG.Promise = root.Promise;
+		return;
 	}
-	else if (root.JSYG) factory(root,JSYG);
-	else throw new Error("You must include JSYG");
-
-}(this, function(root, JSYG) {
 	
 	var PENDING = void(0), SEALED = 0, FULFILLED = 1, REJECTED = 2;
 	
@@ -374,4 +370,4 @@
 	
 	return JSYG.Promise;
 
-}));
+}.bind(this));

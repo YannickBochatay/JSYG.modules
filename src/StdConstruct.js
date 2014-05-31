@@ -1,9 +1,10 @@
-(function() {
+define(["jquery","JSYG"],function($,JSYG) {
 	
 	"use strict";
 	
+	var slice = Array.prototype.slice;
 	/**
-	 * Constructeur standard définissant une liste de fonctions utiles pour les plugins
+	 * Constructeur standard définissant une liste de fonctions utiles pour les plugins ou constructeurs
 	 * @returns {JSYG.StdConstruct}
 	 */
 	JSYG.StdConstruct = function() { };
@@ -12,46 +13,26 @@
 	
 		constructor : JSYG.StdConstruct,
 		/**
-		 * Permet de définir les propriétés de l'objet et des sous-objets de mani�re r�cursive, sans écraser les objets existants
-		 * (seules les propriétés pr�cis�es sont mises à jour)
+		 * Permet de définir les propriétés de l'objet et des sous-objets de manière récursive, sans écraser les objets existants
+		 * (seules les propriétés précisées sont mises à jour)
 		 * @param opt objet contenant les propriétés à modifier
-		 * @param _cible en interne seulement pour appel r�cursif
+		 * @param _cible en interne seulement pour appel récursif
 		 * @returns {JSYG.StdConstruct}
 		 */
 		set : function(opt,_cible) {
 			
 			var cible = _cible || this;
 			
-			if (!JSYG.isPlainObject(opt)) return cible;
+			if (!$.isPlainObject(opt)) return cible;
 									
 			for (var n in opt) {
 				if (n in cible) {
-					if (JSYG.isPlainObject(opt[n]) && cible[n]) this.set(opt[n],cible[n]);
+					if ($.isPlainObject(opt[n]) && cible[n]) this.set(opt[n],cible[n]);
 					else if (opt[n] !== undefined) cible[n] = opt[n];
 				}
 			}
 			
 			return cible;
-		},
-		
-		/**
-		 * Changement du noeud sur lequel s'applique le plugin
-		 * @param arg argument JSYG
-		 * @returns {JSYG.StdConstruct}
-		 */
-		setNode : function(arg) {
-			
-			var node = new JSYG(arg)[0];
-			if (!node) throw new Error(arg+" n'est pas un argument correct pour la méthode setNode : aucun élément DOM renvoyé.");
-			
-			var enabled = (this.enabled === true);
-			if (enabled) this.disable();
-			
-			this.node = node;
-			
-			if (enabled) this.enable();
-			
-			return this;
 		},
 		
 		/**
@@ -72,8 +53,8 @@
 		/**
 		 * Ajout d'un écouteur d'évènement.<br/>
 		 * Cela permet d'ajouter plusieurs fonctions, elles seront conservées dans un tableau.<br/>
-		 * Les doublons sont ignor�s (même évènement même fonction).<br/>
-		 * On peut passer en argument un objet avec les évènements en cl�s et les fonctions en valeur.<br/>
+		 * Les doublons sont ignorés (même évènement même fonction).<br/>
+		 * On peut passer en argument un objet avec les évènements en clés et les fonctions en valeur.<br/>
 		 * Par défaut, le mot cl� this fait référence au noeud DOM sur lequel s'applique le plugin.
 		 * @param events type(s) d'évènement (propre à chaque module, 'click', 'start', 'end', etc) séparés par des espaces.
 		 * @param fct fonction à exécuter lors du déclenchement de l'évènement
@@ -84,7 +65,7 @@
 			
 			var p,i,N,n=null;
 					
-			if (JSYG.isPlainObject(events) && fct==null) {
+			if ($.isPlainObject(events) && fct==null) {
 				for (n in events) this.on(n,events[n]);
 				return this;
 			}
@@ -111,7 +92,7 @@
 		
 		/**
 		 * Suppression d'un écouteur d'évènement (Event Listener) de la liste.<br/>
-		 * On peut passer en argument un objet avec les évènements en cl�s et les fonctions en valeur.
+		 * On peut passer en argument un objet avec les évènements en clés et les fonctions en valeur.
 		 * @param events type(s) d'évènement (propre à chaque module, 'click', 'start', 'end', etc) séparés par des espaces.
 		 * @param fct fonction à supprimer
 		 * @returns {JSYG.StdConstruct}
@@ -121,7 +102,7 @@
 			
 			var p,i,N,n=null;
 			
-			if (JSYG.isPlainObject(events) && fct == null) {
+			if ($.isPlainObject(events) && fct == null) {
 				for (n in events) this.off(n,events[n]);
 				return this;
 			}
@@ -146,7 +127,7 @@
 		/**
 		 * Execution d'un évènement donn�
 		 * @param event nom de l'évènement
-		 * @param context optionnel, objet r�f�renc� par le mot clef "this" dans la fonction, le noeud DOM sur lequel le plugin s'applique par défaut.
+		 * @param context optionnel, objet référencé par le mot clef "this" dans la fonction
 		 * Les arguments suivants sont les arguments passés à la fonction (nombre non défini)
 		 * @returns {JSYG.StdConstruct}
 		 */
@@ -168,28 +149,6 @@
 			else if (p!==null && p!==false) throw new TypeError(typeof p + "Type incorrect pour la propriété on"+event);
 			
 			return returnValue;
-		},
-		
-		/**
-		 * Active ou d�sactive le plugin 
-		 * @param opt
-		 */
-		toggle : function(opt) {
-			
-			if (this.enabled) this.disable();
-			else this.enable(opt);
-			return this;
-		},
-		
-		/**
-		 * D�sactive le plugin et r�initialise les propriétés.
-		 */
-		destroy : function() {
-			this.disable();
-			this.reset();
-			return this;
 		}
-		
 	};
-	
-}());
+});
