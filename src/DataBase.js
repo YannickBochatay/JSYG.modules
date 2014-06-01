@@ -1,7 +1,7 @@
-require(["JSYG","StdConstruct","Promise"],function(JSYG,StdConstruct,Promise) {
-	return;
-	"use strict";
+require(["JSYG","StdConstruct","Promise"],function(JSYG) {
 	
+	"use strict";
+		
 	var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.oIndexedDB || window.msIndexedDB,
 		IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction,
 		IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;

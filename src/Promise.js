@@ -1,11 +1,11 @@
 //tiré de https://github.com/jakearchibald/es6-promise
-define(["JSYG"], function(JSYG) {
-	
+define("JSYG", function(JSYG) {
+			
 	var root = this;
 	
 	if (root.Promise) {
 		JSYG.Promise = root.Promise;
-		return;
+		return JSYG.Promise;
 	}
 	
 	var PENDING = void(0), SEALED = 0, FULFILLED = 1, REJECTED = 2;

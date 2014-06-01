@@ -1,11 +1,12 @@
 (function(root, factory) {
 
-	var $ = root.jQuery;
+	var $ = root.JSYG || root.jQuery;
 	
 	if (typeof define == 'function' && define.amd) {
 		
 		if (!$) {
-			define(['jquery'], function($) {
+			
+			define(['core'], function($) {
 				return factory(root,$);
 			});
 		}
@@ -17,20 +18,18 @@
 
 }(this, function(window, $, global) {
 			
-	'use strict';
+	"use strict";
 	
 	if (!$) throw new Error("jQuery is needed");
 	
 	var NS = {
-		html : 'http://www.w3.org/1999/xhtml',
-		svg : 'http://www.w3.org/2000/svg',
-		xlink : 'http://www.w3.org/1999/xlink'
-	};
-	
-	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
-		rsvgLink = /^<(svg:a)\s*\/?>(?:<\/\1>|)$/;
-	
-	var svg = window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg');
+			html : 'http://www.w3.org/1999/xhtml',
+			svg : 'http://www.w3.org/2000/svg',
+			xlink : 'http://www.w3.org/1999/xlink'
+		},
+		rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+		rsvgLink = /^<(svg:a)\s*\/?>(?:<\/\1>|)$/,
+		svg = window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg');
 	
 	function JSYG(arg,context) {
 		
@@ -69,7 +68,7 @@
 		$.merge(this, array ? array : $(arg,context) );
 				
 		return this;
-	};
+	}
 	
 	JSYG.fn = JSYG.prototype = new $();
 		
@@ -236,7 +235,7 @@
 				else elmt = $.fn.offsetParent.call($this)[0];
 			}
 			
-			elmt && tab.push(elmt);
+			if (elmt) tab.push(elmt);
 			
 		});
 		
@@ -251,16 +250,9 @@
 	}
 	
 	function camelize(str) {
-		return str.replace(rDash,function(str,p1){ return p1.toUpperCase();});
+		return str.replace(rDash,function(p,p1){ return p1.toUpperCase();});
 	}
-	
-	function getSVGcssPropName(cssProp) {
 		
-		if (cssProp == "background-color" || cssProp == "color") return "fill";
-		else if (cssProp == "border-color") return "stroke";
-		else if (cssProp == "border-width") return "stroke-width";
-	}
-	
 	JSYG.prototype.css = function(prop,val) {
 		
 		if ($.isPlainObject(prop)) {
@@ -272,7 +264,7 @@
 			
 			return this.each(function(i) {
 				var $this = new JSYG(this);
-				$this.css( val.call(this,j,$this.css(prop)) );
+				$this.css( val.call(this,i,$this.css(prop)) );
 			});
 		}
 		
@@ -353,7 +345,7 @@
 					
 		JSYG.support.svgUseBBox = use[0].getBBox().x == 20;
 					
-		JSYG.support.svgUseTransform = use[0].getTransformToElement(svg).e != 0;
+		JSYG.support.svgUseTransform = use[0].getTransformToElement(svg).e !== 0;
 
 		use.remove();
 		defs.remove();			
@@ -449,11 +441,11 @@
 				}
 										
 				box = this.attr("viewBox");
-				box && this.attrRemove("viewBox");
+				if (box) this.attrRemove("viewBox");
 				
 				mtx = this[0].getScreenCTM();
 							
-				box && this.attr("viewBox",box);
+				if (box) this.attr("viewBox",box);
 																		
 				point = new JSYG.Point(x,y).mtx(mtx);
 								
@@ -539,7 +531,8 @@
 				natif = JSYG.support.classList[isSVG ? "svg" : "html"],
 				oldClasse,
 				newClasse,
-				className;
+				className,
+				reg;
 					
 			oldClasse = (isSVG ? this.getAttribute('class') : this.className) || '';
 			
@@ -551,7 +544,7 @@
 				
 				if ($.isFunction(className)) {
 					
-					$this.removeClass( className.call(this,j,oldClasse) );
+					$this.removeClass( className.call(this,i,oldClasse) );
 					continue;
 				}
 				else if (typeof className == 'string') {
@@ -594,7 +587,8 @@
 				isSVG = $this.isSVG(),
 				natif = JSYG.support.classList[isSVG ? "svg" : "html"],
 				classe = "",
-				className;
+				className,
+				reg;
 			
 			if (!natif) classe = (isSVG ? this.getAttribute('class') : this.className) || '';
 						
@@ -658,6 +652,8 @@
 		
 		return this;
 	};
+	
+	JSYG.isPlainObject = $.isPlainObject;
 			
 	if (global) window.JSYG = JSYG;
 	

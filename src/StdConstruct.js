@@ -1,7 +1,7 @@
-define(["jquery","JSYG"],function($,JSYG) {
+define("JSYG",function(JSYG) {
 	
 	"use strict";
-	
+				
 	var slice = Array.prototype.slice;
 	/**
 	 * Constructeur standard définissant une liste de fonctions utiles pour les plugins ou constructeurs
@@ -23,11 +23,11 @@ define(["jquery","JSYG"],function($,JSYG) {
 			
 			var cible = _cible || this;
 			
-			if (!$.isPlainObject(opt)) return cible;
+			if (!JSYG.isPlainObject(opt)) return cible;
 									
 			for (var n in opt) {
 				if (n in cible) {
-					if ($.isPlainObject(opt[n]) && cible[n]) this.set(opt[n],cible[n]);
+					if (JSYG.isPlainObject(opt[n]) && cible[n]) this.set(opt[n],cible[n]);
 					else if (opt[n] !== undefined) cible[n] = opt[n];
 				}
 			}
@@ -65,7 +65,7 @@ define(["jquery","JSYG"],function($,JSYG) {
 			
 			var p,i,N,n=null;
 					
-			if ($.isPlainObject(events) && fct==null) {
+			if (JSYG.isPlainObject(events) && fct==null) {
 				for (n in events) this.on(n,events[n]);
 				return this;
 			}
@@ -102,7 +102,7 @@ define(["jquery","JSYG"],function($,JSYG) {
 			
 			var p,i,N,n=null;
 			
-			if ($.isPlainObject(events) && fct == null) {
+			if (JSYG.isPlainObject(events) && fct == null) {
 				for (n in events) this.off(n,events[n]);
 				return this;
 			}
@@ -151,4 +151,6 @@ define(["jquery","JSYG"],function($,JSYG) {
 			return returnValue;
 		}
 	};
+		
+	return JSYG.StdConstruct;
 });
