@@ -1,4 +1,4 @@
-JSYG.require("Transform",function(JSYG) {
+JSYG.require("Transform","Promise","Path",function(JSYG) {
 	
 	"use strict";
 	
@@ -327,7 +327,7 @@ JSYG.require("Transform",function(JSYG) {
 		},
 		
 		/**
-		 * R�initialisation de l'animation et des options
+		 * Réinitialisation de l'animation et des options
 		 */
 		reset : function() {
 			JSYG.StdConstruct.prototype.reset.call(this);
@@ -431,9 +431,7 @@ JSYG.require("Transform",function(JSYG) {
 					jNode.css(n,color.toString());
 					
 				} else if (n == "d") {
-					
-					if (!JSYG.Path) throw new Error("Il faut inclure le module JSYG.Path");
-					
+										
 					path = new JSYG.Path();
 										
 					this._from.d.forEach(function(segFrom,i) {

@@ -3,7 +3,7 @@
 	"use strict";
 	/* 
 	 * 
-	 * Si on passe une chaîne en argument, voil� les formats compris :
+	 * Si on passe une chaîne en argument, voilà les formats compris :
 	 * 
 	 * ////////////////////////////////////////////////////////////////////////
 	 * rfc2822
@@ -131,11 +131,11 @@
 		 */
 		date : null,
 		/**
-		 * Exprime ou non les dates en temps universel coordonn�
+		 * Exprime ou non les dates en temps universel coordonné
 		 */
 		utc : false,
 		/**
-		 * Langue utilis�e (parmi la liste JSYG.Date.languages)
+		 * Langue utilisée (parmi la liste JSYG.Date.languages)
 		 */
 		lang : "fr",
 		/**
@@ -187,7 +187,7 @@
 		},
 		
 		/**
-		 * définition d'un paramêtre de la date
+		 * définition d'un paramètre de la date
 		 * @param units
 		 * <ul>
 		 * <li>seconds</li>
@@ -206,7 +206,7 @@
 		 * 
 		 * date.january = 0;
 		 * date.set('month',1);
-		 * date.toString('MOIS'); //f�vrier (comportement par défaut en javascript)
+		 * date.toString('MOIS'); //février (comportement par défaut en javascript)
 		 */
 		set : function(units,val) {
 			
@@ -221,7 +221,7 @@
 
 		/**
 		 * Renvoie une chaîne de caract�res au format spécifié
-		 * @param format Par défaut "JOUR J MOIS ANNEE". S�parateurs au choix<ul>
+		 * @param format Par défaut "JOUR J MOIS ANNEE". Séparateurs au choix<ul>
 		 * <li>YYYY,YEAR : ann�e sur 4 chiffres</li>
 		 * <li>YY : ann�e sur 2 chiffres</li>
 		 * <li>MONTH : nom du mois</li>
@@ -284,7 +284,7 @@
 		},
 		
 		/**
-		 * Teste si la date correspond à un jour feri�
+		 * Teste si la date correspond à un jour ferié
 		 * @returns {Boolean}
 		 */
 		isOff : function() {
@@ -321,11 +321,11 @@
 		},
 		
 		/**
-		 * Ajoute un nombre donn� d'unit�s à la date.
-		 * @param units type d'unit�s ajout�es ('seconds','minutes','hours','days','months','years'), insensible à la casse et au "s" final.
-		 * @param nb nombre entier ou d�cimal, positif ou négatif.
+		 * Ajoute un nombre donné d'unités à la date.
+		 * @param units type d'unités ajoutées ('seconds','minutes','hours','days','months','years'), insensible à la casse et au "s" final.
+		 * @param nb nombre entier ou décimal, positif ou négatif.
 		 * <br/><br/>
-		 * On peut aussi passer en argument une chaîne de caract�res unique de type "nb1 units1 nb2 units2".
+		 * On peut aussi passer en argument une chaîne de caractères unique de type "nb1 units1 nb2 units2".
 		 * @example <pre>
 		 * var date = new JSYG.Date();
 		 * date.add("days",1).add("months",2);
@@ -412,7 +412,7 @@
 		"fr" : {
 			months : ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"],
 			days : ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"],
-			off : ["1-1","5-1","5-8","7-14","8-15","11-1","11-11","12-25"] //jour f�ri�s
+			off : ["1-1","5-1","5-8","7-14","8-15","11-1","11-11","12-25"]
 		},
 		
 		"en" : {

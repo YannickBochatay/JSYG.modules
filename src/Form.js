@@ -1,4 +1,4 @@
-(function(JSYG) {
+(function() {
 	
 	"use strict";
 	
@@ -194,7 +194,7 @@
 				
 				if (input.length > 1) {
 					if (input.attr('type') == 'radio') this.radioVal(name,json[name],preventEvt);
-					else throw new Error("Plusieurs champs de formulaire sont nomm�s "+name);
+					else throw new Error("Plusieurs champs de formulaire sont nommés "+name);
 				}
 				else if (input.length == 1) input.val(json[name],preventEvt);
 			}
@@ -284,4 +284,4 @@
 		return str.replace(/&$/,'');
 	};
 	
-}(this.jQuery || this.JSYG));
+}());

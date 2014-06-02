@@ -353,37 +353,6 @@
 		
 	}());
 	
-	
-	
-	JSYG.Point = function(x,y) {
-		
-		if (typeof x === 'object' && y == null) {
-			y = x.y;
-			x = x.x;
-		}
-		
-		this.x = (typeof x == "number") ? x : parseFloat(x);
-		this.y = (typeof y == "number") ? y : parseFloat(y);
-	};
-	
-	JSYG.Point.prototype = {
-			
-		constructor : JSYG.Point,
-		
-		mtx : function(mtx) {
-		
-			if (JSYG.Matrix && (mtx instanceof JSYG.Matrix)) mtx = mtx.mtx;
-			if (!mtx) return new JSYG.Point(this.x,this.y);
-			
-			var point = svg.createSVGPoint();
-			point.x = this.x;
-			point.y = this.y;
-			point = point.matrixTransform(mtx);
-			
-			return new JSYG.Point(point.x,point.y);
-		}
-	};
-	
 	JSYG.prototype.position = function() {
 		
 		if (!this.isSVG()) return $.fn.position.call(this);
@@ -654,7 +623,36 @@
 	};
 	
 	JSYG.isPlainObject = $.isPlainObject;
+	
+	JSYG.Point = function(x,y) {
+		
+		if (typeof x === 'object' && y == null) {
+			y = x.y;
+			x = x.x;
+		}
+		
+		this.x = (typeof x == "number") ? x : parseFloat(x);
+		this.y = (typeof y == "number") ? y : parseFloat(y);
+	};
+	
+	JSYG.Point.prototype = {
 			
+		constructor : JSYG.Point,
+		
+		mtx : function(mtx) {
+		
+			if (JSYG.Matrix && (mtx instanceof JSYG.Matrix)) mtx = mtx.mtx;
+			if (!mtx) return new JSYG.Point(this.x,this.y);
+			
+			var point = svg.createSVGPoint();
+			point.x = this.x;
+			point.y = this.y;
+			point = point.matrixTransform(mtx);
+			
+			return new JSYG.Point(point.x,point.y);
+		}
+	};
+				
 	if (global) window.JSYG = JSYG;
 	
 	return JSYG;

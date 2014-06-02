@@ -5,7 +5,7 @@
 	/**
 	* exécute une fonction sur chaque élément de la liste.
 	* @param list liste à traiter (Array, NodeList, SVGList, FileList, JSYG, etc)
-	* @param callback fonction a �x�cuter sur chaque élément. this fait référence à l'élément, le 1er argument son indice.
+	* @param callback fonction a éxécuter sur chaque élément. this fait référence à l'élément, le 1er argument son indice.
 	* Si la fonction renvoie false, on sort de la boucle.
 	* @returns list
 	*/

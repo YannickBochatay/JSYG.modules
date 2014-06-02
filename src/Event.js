@@ -6,18 +6,17 @@
 	
 	var propListeners = 'JSYGListeners';
 	
-	//test� sur un clavier fran�ais uniquement
 	/**
-	 * Liste des touches non alphanum�riques d'un clavier fran�ais
+	 * Liste des touches non alphanumériques d'un clavier français
 	 */
-	
-	
+	JSYG.nonAlphaNumKeys = {8:'backspace',9:'tab',13:'enter',16:'shift',17:'ctrl',18:'alt',19:'pause',20:'caps-lock',27:'escape',32:" ",33:'page-up',34:'page-down',37:'left-arrow',38:'up-arrow',39:'right-arrow',40:'down-arrow',45:'insert',46:'delete',48:'à',35:'end',36:'home',49:'&', 50:'é', 51:'"', 52:"'", 53:'(', 54:'-', 55:'è', 56:'_', 57:'ç', 58:'à', 59:'$', 91:'left-window-key',92:'right-window-key',93:'select',96:'0', 97:'1', 98:'2', 99:'3', 100:'4', 101:'5', 102:'6', 103:'7', 104:'8', 105:'9', 106:'*', 107:'+', 109:'-', 110:'.', 111:'/',112:"f1",113:"f2",114:"f3",115:"f4",116:"f5",117:"f6",118:"f7",119:"f8",120:"f9",121:"f10",122:"f11",123:"f12",144:'num-lock',145:'scroll-lock',188:',',190:';',191:':',192:'ù',219:')',220:'*',222:'²',223:'!',226:'<',221:'^'};
+		
 	/**
 	 * Constructeur d'objets JSYG.Event, qui est l'objet passé par défaut aux écouteurs d'évènements (objet Event customis�).
 	 * Il permet de mettre à niveau IE, et d'ajouter quelques propriétés :
 	 * <ul>
-	 * 		<li><strong>buttonName</strong>: nom du bouton enclench� ('left' ou 'right')</li>
-	 * 		<li><strong>keyName</strong>: nom de la touche clavier enclench�e (voir la liste JSYG.nonAlphaNumKeys pour les caract�res non alphanum�riques)</li>
+	 * 		<li><strong>buttonName</strong>: nom du bouton enclenché ('left' ou 'right')</li>
+	 * 		<li><strong>keyName</strong>: nom de la touche clavier enclenchée (voir la liste JSYG.nonAlphaNumKeys pour les caract�res non alphanum�riques)</li>
 	 *		<li>wheelDelta (molette de la souris, propriété impl�ment�e dans IE,Chrome mais non standard)</li>
 	 * </ul>
 	 * @param e objet Event original
@@ -46,7 +45,7 @@
 		 */
 		this.type = e.type;
 		/**
-		 * D�tails sur le clic
+		 * Détails sur le clic
 		 */
 		this.detail = e.detail;
 		/**
@@ -54,11 +53,11 @@
 		*/
 		this.wheelDelta = (e.wheelDelta === undefined && e.detail) ? -e.detail * 40 : e.wheelDelta;
 		/**
-		 * Nom du bouton souris enclench� (left ou right)
+		 * Nom du bouton souris enclenché (left ou right)
 		 */
 		this.buttonName = (e.button === 2) ? 'right' : 'left';
 		/**
-		 * Cible associ�e à l'évènement
+		 * Cible associée à l'évènement
 		 */
 		this.relatedTarget = e.relatedTarget || e.toElement;
 		/**
@@ -90,7 +89,7 @@
 		
 		if (/key(up|down)/i.test(e.type)) {
 			/**
-			 * Nom de la touche clavier enclench�e
+			 * Nom de la touche clavier enclenchée
 			 */
 			this.keyName = JSYG.nonAlphaNumKeys[e.keyCode]!== undefined ? JSYG.nonAlphaNumKeys[e.keyCode] : String.fromCharCode(e.charCode || e.keyCode).toLowerCase();
 		} else if (e.type === 'keypress') {
@@ -102,20 +101,20 @@
 		this.keyCode = e.keyCode;
 		
 		/**
-		 * Bool�en indiquant si la touche ctrl est enclench�e
+		 * Bool�en indiquant si la touche ctrl est enclenchée
 		 */
 		this.ctrlKey = (this.keyName == "ctrl") ? true : e.ctrlKey; //pb avec chrome sur keydown
 				
 		/**
-		 * Bool�en indiquant si la touche alt est enclench�e
+		 * Bool�en indiquant si la touche alt est enclenchée
 		 */
 		this.altKey = (this.keyName == "alt") ? true : e.altKey; //pb avec chrome sur keydown
 		/**
-		 * Bool�en indiquant si la touche shift est enclench�e
+		 * Bool�en indiquant si la touche shift est enclenchée
 		 */
 		this.shiftKey = (this.keyName == "shift") ? true : e.shiftKey; //pb avec chrome sur keydown
 		/**
-		 * Bool�en indiquant si la touche meta est enclench�e (mac)
+		 * Bool�en indiquant si la touche meta est enclenchée (mac)
 		 */
 		this.metaKey = (this.keyName == "meta") ? true : e.metaKey;
 	};
@@ -142,7 +141,7 @@
 	};
 	
 	/**
-	 * Renvoie true si aucune touche n'est définie ni d�clench�e, ou si une touche est définie et elle et elle seule est enclench�e 
+	 * Renvoie true si aucune touche n'est définie ni d�clench�e, ou si une touche est définie et elle et elle seule est enclenchée 
 	 */
 	function checkStrictKey(e,key) {
 		
@@ -159,7 +158,7 @@
 
 	/**
 	 * Cr�e une fonction qui permet d'executer la fonction fct sur les évènements mouseup ou click seulement si la souris
-	 * n'a pas boug� pendant que le bouton �tait enclench�.
+	 * n'a pas boug� pendant que le bouton �tait enclenché.
 	 * Un bouton et une touche sp�ciale (ctrl,alt,shift,meta) peuvent être spécifiés �galement.
 	 */
 	function createStrictClickFunction(node,evt,selector,fct,button,key,direct,uniqueCallback) {
@@ -202,7 +201,7 @@
 	}
 	
 	/**
-	 * Cr�e une fonction qui execute fct seulement si la combinaison touche et bouton est respect�e
+	 * Crée une fonction qui execute fct seulement si la combinaison touche et bouton est respectée
 	 */
 	function createCustomFunction(node,evt,selector,fct,button,key,strict,direct,uniqueCallback) {
 								
@@ -312,7 +311,7 @@
 	var windowLoaded = false;
 	/**
 	 * Ajout d'un écouteur d'évènement sur la collection. Compatible IE6+<br/><br/>
-	 * On peut �galement passer en argument un objet avec en cl�s les noms des évènements et en valeurs les fonctions.<br/><br/>
+	 * On peut également passer en argument un objet avec en cl�s les noms des évènements et en valeurs les fonctions.<br/><br/>
 	 * Par cette méthode :
 	 * <ul>
 	 * 	<li>dans la fonction le mot cl� this fait référence à l'élément DOM</li>
@@ -329,11 +328,11 @@
 	 * On peut ajouter les pr�cisions suivantes aux évènements, séparées par un tiret :
 	 * 	<ul>
 	 * 		<li>"left" ou "right" : seulement sur un bouton sp�cifique.</li>
-	 * 		<li>"ctrl","alt","shift" : seulement si la touche spécifiée est enclench�e.</li>
+	 * 		<li>"ctrl","alt","shift" : seulement si la touche spécifiée est enclenchée.</li>
 	 * 		<li>"strict" :
 	 * 			<ul>
-	 * 				<li>Si une touche est spécifiée, ne se déclenche que si cette touche et uniquement celle-ci est enclench�e.</li>
-	 * 				<li>Si aucune touche n'est spécifiée, ne se déclenche que si aucune touche n'est enclench�e.</li>
+	 * 				<li>Si une touche est spécifiée, ne se déclenche que si cette touche et uniquement celle-ci est enclenchée.</li>
+	 * 				<li>Si aucune touche n'est spécifiée, ne se déclenche que si aucune touche n'est enclenchée.</li>
 	 *  			<li>Sur les évènements "mouseup" et "click", ne se déclenche que si la souris n'a pas boug� pendant le clic.
 	 *  				Une tol�rance peut être définie par la méthode JSYG.prototype.dragTolerance.
 	 *  			</li>
@@ -344,8 +343,8 @@
 	 * 	</ul>
 	 * </li>
 	 * @param selector optionnel (si non défini, <code>fct</code> devient le deuxi�me argument),
-		selecteur css pour d�l�gation d'évènement. L'écouteur d'évènement est attach� à la collection mais
-		la fonction s'exécute seulement si la cible r�pond aux crit�res de ce sélecteur.
+		selecteur css pour délégation d'évènement. L'écouteur d'évènement est attach� à la collection mais
+		la fonction s'exécute seulement si la cible répond aux critères de ce sélecteur.
 		Dans <code>fct</code>, le mot cl� this fait alors référence à la cible et non à l'élément de la collection initiale.
 	 * @param fct fonction à exécuter lors du déclenchement de l'évènement.
 	 * @returns {JSYG}
@@ -358,7 +357,7 @@
 	 * 
 	 * new JSYG("#maDiv").on("mouseover click",function(e) { e.preventDefault(); });
 	 * 
-	 * //D�l�gation d'évènements
+	 * //Délégation d'évènements
 	 * new JSYG(document.body).on("click",'.cliquable',function() {
 	 * 	alert('ceci est un élément cliquable');
 	 * });
@@ -453,7 +452,7 @@
 				}
 				
 				for (j=0,M=ls.length;j<M;j++) {
-					//l'évènement est déjà enregistr�
+					//l'évènement est déjà enregistré
 					if (ls[j].evt === evt && ls[j].fct === fct && ls[j].selector === selector) continue boucle;
 				}
 												 
@@ -492,9 +491,9 @@
 		
 	/**
 	 * Suppression d'un écouteur d'évènement sur la collection.<br/><br/>
-	 * On peut �galement passer en argument un objet avec en cl�s les noms des évènements et en valeurs les fonctions.<br/><br/>
+	 * On peut également passer en argument un objet avec en clés les noms des évènements et en valeurs les fonctions.<br/><br/>
 	 * @param evt chaîne, nom du ou des évènements ('mousedown','keypress',etc) séparés par des espaces.
-	 * @param selector optionnel, chaîne, sélecteur css pour d�l�gation d'évènements.
+	 * @param selector optionnel, chaîne, sélecteur css pour délégation d'évènements.
 	 * @param fct fonction à exécuter lors du déclenchement de l'évènement.
 	 * @returns {JSYG}
 	 * @see JSYG.prototype.on
@@ -565,7 +564,7 @@
 	};
 	
 	/**
-	 * même principe que la méthode JSYG.prototype.on mais la fonction n'est execut�e qu'une seule fois.
+	 * même principe que la méthode JSYG.prototype.on mais la fonction n'est executée qu'une seule fois.
 	 * @see JSYG.prototype.on
 	 * @param evt
 	 * @param fct
@@ -573,7 +572,7 @@
 	 
 	JSYG.prototype.one = function(evt,selector,fct) {
 		
-		if (typeof(evt) === 'object') { //appel r�cursif si on passe un objet en paramêtre
+		if (typeof(evt) === 'object') { //appel récursif si on passe un objet en paramêtre
 			for (var n in evt) {
 				if (evt.hasOwnProperty(n)) {this.one(n,selector,evt[n]); }
 			}
@@ -640,7 +639,7 @@
 	 */
 	JSYG.prototype.trigger = function(type) {
 		
-		if (this['on'+type] !== undefined) { //évènement customis�
+		if (this['on'+type] !== undefined) { //évènement customisé
 			return JSYG.StdConstruct.prototype.trigger.apply(this,arguments);
 		}
 		
@@ -753,8 +752,8 @@
 	};
 	
 	/**
-	 * Renvoie ou définit le nombre de pixels d'un d�placement souris au del� duquel
-			les évènements customis�s 'strict-click' et 'strict-mouseup' ne seront pas d�clench�s.
+	 * Renvoie ou définit le nombre de pixels d'un déplacement souris au delà duquel
+	 * les évènements customisés 'strict-click' et 'strict-mouseup' ne seront pas déclenchés.
 	 * @param px nombre de pixels
 	 * @returns {Number,JSYG}
 	 */
@@ -785,7 +784,7 @@
 	JSYG.prototype.stopPropagation = function(evt) { return this.on(evt,JSYG.stopPropagation); };
 	
 	/**
-	 * R�tablit la propagation de l'évènement donn�
+	 * Rétablit la propagation de l'évènement donn�
 	 * @param evt nom de l'évènement
 	 */
 	JSYG.prototype.releasePropagation = function(evt) { return this.off(evt,JSYG.stopPropagation); };
@@ -797,15 +796,13 @@
 	JSYG.prototype.preventDefault = function(evt) { return this.on(evt,JSYG.preventDefault); };
 	
 	/**
-	 * R�tablit l'action par défaut de l'évènement donn�
+	 * Rétablit l'action par défaut de l'évènement donn�
 	 * @param evt nom de l'évènement
 	 */
 	JSYG.prototype.releaseDefault = function(evt) { return this.off(evt,JSYG.preventDefault); };
 	
-	
-	
 
-	new JSYG(window).on('load',function() { windowLoaded = true; });
+	new JSYG(window).on('load',function() { windowRétae; });
 	
 	
 }(window.jQuery || window.JSYG));

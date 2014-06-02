@@ -649,7 +649,9 @@ function matchClosing(input, tagname, html) {
     
   };
 
-  JSYG.template.Mapper = Mapper; 
+  JSYG.template.Map = Mapper;
+  
+  return JSYG.template;
   
   
 }(this));
