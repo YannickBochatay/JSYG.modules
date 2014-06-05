@@ -1,4 +1,4 @@
-(function() {
+require(["JSYG"],function() {
 	
 	"use strict";
 	

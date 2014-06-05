@@ -1,4 +1,4 @@
-JSYG.require("Date",function() {
+require(["Date"],function() {
 	
 	"use strict";
 	
@@ -93,5 +93,7 @@ JSYG.require("Date",function() {
 	 * Gestion des cookies
 	 */
 	JSYG.cookies = new Cookies();
+	
+	return JSYG.cookies; 
 	
 });

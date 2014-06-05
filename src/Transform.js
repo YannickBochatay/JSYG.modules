@@ -1,4 +1,4 @@
-JSYG.require("Matrix","Vect","Dimensions",function() {
+require(["JSYG","Matrix","Vect","Dimensions"],function() {
 	
 	var svg = JSYG.support.svg;
 	

@@ -1,8 +1,8 @@
 //tiré de https://github.com/jakearchibald/es6-promise
-define("JSYG", function(JSYG) {
-			
-	var root = this;
+(function(root) {
 	
+	"use strict";
+				
 	if (root.Promise) {
 		JSYG.Promise = root.Promise;
 		return JSYG.Promise;
@@ -370,4 +370,4 @@ define("JSYG", function(JSYG) {
 	
 	return JSYG.Promise;
 
-}.bind(this));
+}(this));

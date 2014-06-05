@@ -653,7 +653,8 @@
 		}
 	};
 				
-	if (global) window.JSYG = JSYG;
+	//if (global) window.JSYG = JSYG;
+	window.JSYG = JSYG;
 	
 	return JSYG;
 	

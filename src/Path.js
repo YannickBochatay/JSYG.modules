@@ -1693,4 +1693,6 @@
 		return this;
 	};
 	
+	return JSYG.Path;
+	
 })();

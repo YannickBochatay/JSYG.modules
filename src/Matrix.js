@@ -1,4 +1,4 @@
-JSYG.require("Vect",function() {
+require(["Vect"],function() {
 	
 	"use strict";
 	
@@ -377,4 +377,6 @@ JSYG.require("Vect",function() {
 			
 		} catch(e) {}
 	}
+	
+	return JSYG.Matrix;
 });

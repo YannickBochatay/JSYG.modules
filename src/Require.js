@@ -9,8 +9,9 @@
 		files = [],
 		inProgress = false,
 		preventInfiniteLoop=0,
+		currentScript,
 		config = {
-			baseURL:currentPath(),
+			baseURL:getCurrentPath(),
 			urlArgs:null,
 			paths:{}
 		};
@@ -168,6 +169,7 @@
 		js.onload = js.onreadystatechange = function() {
 			if (this.readyState && (this.readyState != 'loaded' && this.readyState != 'complete') ) return false;
 			callback && callback();
+			body.removeChild(js);
 		};
 		
 		js.onerror = function() {
@@ -204,7 +206,9 @@
 	    }
 	}
 	
-	function currentScript() {
+	function getCurrentScript() {
+		
+		//if (currentScript) return currentScript;
 		
 		var scripts = document.getElementsByTagName("script");
 		return scripts.item( scripts.length-1 );
@@ -214,9 +218,9 @@
 	 * Renvoie le répertoire du fichier javascript courant
 	 * @returns {String}
 	 */
-	function currentPath() {
+	function getCurrentPath() {
 		
-		var script = currentScript().src;
+		var script = getCurrentScript().src;
 		return script.substr(0,script.lastIndexOf('/')+1);
 	}
 	
@@ -228,7 +232,7 @@
 		
 		function replace(s,s1){ if (s1!='..') return '';};
 		
-		if (path.charAt(0) == ".") path = currentPath() + path;
+		if (path.charAt(0) == ".") path = getCurrentPath() + path;
 		
 		while (path.indexOf('..') !=-1) {
 			
@@ -280,14 +284,14 @@
 			a[i] = normalize(a[i]);
 			
 			if (require.urlArgs) a[i]+=URLdelimiter(a[i])+config.urlArgs;
-												
+
 			addFile(a[i]);
 		}
 		
 		if (callback) {
 			
 			callback.dependencies = a;
-			callback.fileName = document.currentScript && document.currentScript.src;
+			callback.fileName = document.currentScript && document.currentScript.src || getCurrentScript();
 		}
 				
 		return loadAll(callback);
@@ -301,9 +305,10 @@
 	};
 			
 	window.require = window.define = require;
-	window.define.amd = true;
 	
-	var main = currentScript().getAttribute('data-main');
+	window.define.amd = {};
+	
+	var main = getCurrentScript().getAttribute('data-main');
 	if (main) require(main);
 	main = null;
 	

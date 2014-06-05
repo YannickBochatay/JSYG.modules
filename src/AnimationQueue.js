@@ -1,4 +1,4 @@
-JSYG.require("Animation","StdConstruct",function() {
+require(["Animation","StdConstruct"],function() {
 	
 	"use strict";
 	
@@ -369,5 +369,7 @@ JSYG.require("Animation","StdConstruct",function() {
 			return this;
 		}
 	};
+	
+	return JSYG.AnimationQueue;
 	
 });

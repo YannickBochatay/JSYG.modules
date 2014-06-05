@@ -1,4 +1,4 @@
-JSYG.require("Transform","Promise","Path",function(JSYG) {
+require(["Transform","Promise","Path"],function() {
 	
 	"use strict";
 	
@@ -764,6 +764,7 @@ JSYG.require("Transform","Promise","Path",function(JSYG) {
 		return method == "get" ? value : this;
 	};
   
+	return JSYG.Animation;
 	
 });
 

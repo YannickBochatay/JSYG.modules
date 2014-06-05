@@ -138,4 +138,6 @@ define(["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JS
 			});
 		}
 	};
+	
+	return JSYG.Model;
 });

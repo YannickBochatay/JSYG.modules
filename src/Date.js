@@ -422,4 +422,6 @@
 		}
 	};
 	
+	return JSYG.Date;
+	
 }());

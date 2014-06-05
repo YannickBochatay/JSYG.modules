@@ -284,4 +284,6 @@
 		return str.replace(/&$/,'');
 	};
 	
+	return JSYG.Form;
+	
 }());

@@ -1,4 +1,4 @@
-require("StdContruct",function() {
+require(["StdContruct"],function() {
 	
 	"use strict";
 	
@@ -325,6 +325,7 @@ require("StdContruct",function() {
 			req.open(method, url, true);
 			
 			req.onreadystatechange = that._processResponse.bind(that,resolve,reject);
+			req.onabort = reject;
 			
 			that.trigger('start',req);
 			

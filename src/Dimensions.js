@@ -1,4 +1,4 @@
-JSYG.require("Style","Transform","Vect",function() {
+require(["Style","Transform","Vect"],function() {
 	
 	"use strict";
 	
