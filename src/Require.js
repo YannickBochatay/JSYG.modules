@@ -290,8 +290,8 @@
 		
 		if (callback) {
 			
-			callback.dependencies = a;
-			callback.fileName = document.currentScript && document.currentScript.src || getCurrentScript();
+			//callback.dependencies = a;
+			//callback.fileName = document.currentScript && document.currentScript.src || getCurrentScript();
 		}
 				
 		return loadAll(callback);
@@ -304,9 +304,10 @@
 		}
 	};
 			
-	window.require = window.define = require;
+	window.require = require;
 	
-	window.define.amd = {};
+	//window.define = require;
+	//window.define.amd = {};
 	
 	var main = getCurrentScript().getAttribute('data-main');
 	if (main) require(main);
