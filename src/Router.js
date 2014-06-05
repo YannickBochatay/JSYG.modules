@@ -10,17 +10,15 @@
 	function Router() {
 		
 		this.routes = [];
-		this.root = "/";
 	}
 	
 	Router.prototype = new JSYG.StdContruct();
 	
+	Router.prototype.root = '/';
+	
+	Router.prototype.mode = 'hash';
+	
 	Router.prototype.add = function(re, handler) {
-		
-		if (typeof re == 'function') {
-			handler = re;
-			re = '';
-		}
 		
 		this.routes.push({
 			re : re,
@@ -63,21 +61,10 @@
 		
 		return this;
 	};
-	
-	Router.prototype.flush = function() {
 		
-		while(this.routes[0]) this.routes.pop();
+	function check() {
 		
-		this.mode = null;
-		
-		this.root = '/';
-		
-		return this;
-	};
-	
-	Router.prototype._check = function(f) {
-		
-		var fragment = f || this.getFragment(),
+		var fragment = this.getFragment(),
 			match,i=0,N=this.routes.length;
 		
 		for (;i<N;i++) {
@@ -86,21 +73,19 @@
 			
 			if (match) {
 				match.shift();
-				this.routes[i].handler.apply({}, match);
+				this.routes[i].handler.apply(this,match);
 				return this;
 			}
 		}
 		
 		return this;
-	};
+	}
 			
 	Router.prototype.listen = function() {
 		
-		var that = this;
+		var listen = check.bind(this);
 		
 		this.stopListening();
-		
-		function listen() { that.check(that.getFragment()); }
 		
 		window.addEventListener("hashchange",listen,false);
 		
@@ -112,6 +97,15 @@
 	};
 	
 	Router.prototype.stopListening = function() {
+		return this;
+	};
+	
+	Router.prototype.reset = function() {
+		
+		JSYG.StdConstruct.prototype.reset.call(this);
+		
+		while (this.routes[0]) this.routes.pop();
+		
 		return this;
 	};
 	
