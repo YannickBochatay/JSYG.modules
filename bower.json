@@ -9,9 +9,7 @@
     },
     "devDependencies": {
         "qunit": "latest",
-        "requirejs":"latest",
-        "zepto":"latest",
-        "r.js":"latest"
+        "zepto":"latest"
     },
     "license": "MIT",
   	"ignore": ["**/.*"],
