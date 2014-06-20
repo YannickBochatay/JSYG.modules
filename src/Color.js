@@ -18,7 +18,8 @@
 	 * 		<ul>
 	 * 			<li>rgb : propriétés r,g,b de 0 à 255</li>
 	 * 			<li>rgba : propriétés r,g,b de 0 à 255 et a de 0 à 1</li>
-	 * 			<li>hsv : propriétés h de 0 à 360, s de 0 à 100, v de 0 à 100</li>  
+	 * 			<li>hsv : propriétés h de 0 à 360, s de 0 à 100, v de 0 à 100</li>
+	 *			<li>hsl : propriétés h de 0 à 360, s de 0 à 100, l de 0 à 100</li>
 	 * 			<li>cmyk : propriétés c, m, y, k de 0 à 100</li>
 	 * 		</ul>
 	 * </li>
@@ -45,12 +46,17 @@
 			else if ('h' in arg && 's' in arg && 'v' in arg) {
 				return new JSYG.Color( JSYG.Color.hsv2rgb(arg.h,arg.s,arg.v) );
 			}
+			else if ('h' in arg && 's' in arg && 'l' in arg) {
+				return new JSYG.Color( JSYG.Color.hsl2rgb(arg.h,arg.s,arg.l) );
+			}
 			else if ('c' in arg && 'm' in arg && 'y' in arg && 'k' in arg) {
 				return new JSYG.Color( JSYG.Color.cmyk2rgb(arg.c,arg.m,arg.y,arg.k) );
 			}
 			else throw new Error(arg+" : argument incorrect");
 		}
 	};
+	
+	//plus de méthodes disponibles sur https://github.com/harthur/color/blob/master/color.js
 	
 	JSYG.Color.prototype = {
 		
@@ -196,6 +202,15 @@
 		},
 		
 		/**
+		 * Renvoie un objet avec les propriétés h,s,l (teinte, saturation, lumière)
+		 * @returns {Object}
+		 */
+		toHSL : function() {
+			var hsv = JSYG.Color.rgb2hsv(this.r,this.g,this.b);
+			return JSYG.Color.hsv2hsl(hsv.h,hsv.s,hsv.v);
+		},
+		
+		/**
 		 * Renvoie la chaîne hexadecimale sur 6 chiffres (sans le #)
 		 * @returns {String}
 		 */
@@ -218,7 +233,7 @@
 		 */
 		toString : function(format) {
 						
-			if (this.r == null || this.g == null || this.b == null) return null;
+			if (this.r == null || this.g == null || this.b == null) { return null; }
 			
 			this.r = Math.round(this.r);
 			this.g = Math.round(this.g);
@@ -226,9 +241,9 @@
 			
 			format = format && format.toLowerCase();
 			
-			if (!format || format === 'rgb') return 'rgb('+this.r+','+this.g+','+this.b+')';
-			else if (format === 'rgba') return 'rgba('+this.r+','+this.g+','+this.b+','+this.a+')';
-			else if (format && format === 'hex') return '#'+this.toHEX();
+			if (!format || format === 'rgb') { return 'rgb('+this.r+','+this.g+','+this.b+')'; }
+			else if (format === 'rgba') { return 'rgba('+this.r+','+this.g+','+this.b+','+this.a+')'; }
+			else if (format && format === 'hex') { return '#'+this.toHEX(); }
 			else if (format && format === 'name') {
 			
 				var codes = JSYG.Color.htmlCodes, rgb;
@@ -255,6 +270,23 @@
 		},
 		
 		/**
+		 * Renvoie la luminosité relative de la couleur
+		 * @link http://www.w3.org/TR/WCAG20/#relativeluminancedef
+		 */
+		luminosity : function() {
+			
+			var lum = [],
+				composantes = ['r','g','b'],
+				i, chan;
+			
+			for (i=0;i<3;i++) {
+				chan = this[composante[i]] / 255;
+				lum[i] = (chan <= 0.03928) ? chan / 12.92 : Math.pow(((chan + 0.055) / 1.055), 2.4);
+			}
+			
+			return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
+		},
+		/**
 		 * Renvoie la couleur équivalente en niveau de gris
 		 * @returns {JSYG.Color} nouvelle instance
 		 */
@@ -268,8 +300,30 @@
 				b:brightness
 			});
 		},
+		
 		/**
-		 * Renvoie la diff�rence avec une autre couleur
+		 * Renvoie la couleur éclaircie d'une valeur donnée
+		 * @param val valeur de l'éclaircissement à ajouter (négatif pour assombrir la couleur). La valeur de luminosité est comprise
+		 * entre 0 et 100.
+		 * @returns {JSYG.Color}
+		 */
+		lighten : function(val) {
+			
+			var hsl = this.toHSL();
+			hsl.l = JSYG.clip( hsl.l + parseInt(val,10),0,100);
+			return new JSYG.Color(hsl);
+		},
+		
+		rotate: function(deg) {
+			
+			var hsv = this.toHSV();
+			hsv.h = (hsv.h + deg) % 360;
+			if (hsv.h < 0) hsv.h += 360;
+			return new JSYG.Color(hsv);
+		},
+		
+		/**
+		 * Renvoie la différence avec une autre couleur
 		 * @param color objet JSYG.Color ou chaîne à parser
 		 * @returns {Number}
 		 * @link http://www.w3.org/TR/AERT#color-contrast
@@ -298,7 +352,7 @@
 		},
 		
 		/**
-		 * Renvoie la couleur compl�mentaire
+		 * Renvoie la couleur complémentaire
 		 * @returns {JSYG.Color} nouvelle instance
 		 */
 		complementary : function() {
@@ -325,7 +379,7 @@
 	 */
 	JSYG.Color.showHTMLColors = function() {
 		for (var n in JSYG.Color.htmlCodes) {
-			new JSYG('<div>').css("background-color",n).text(n).appendTo(document.body);
+			new JSYG('<div>').fill(n).text(n).appendTo(document.body);
 		}
 	};
 	
@@ -362,7 +416,7 @@
 		s/= 100;
 		v/= 100;
 		
-		if (v === 0) { r = g = b = 0; }
+		if (v === 0) r = g = b = 0;
 		else {
 			
 			i = Math.floor(h * 6);
@@ -410,9 +464,9 @@
 			
 			s = delta / max;
 			
-			if (r == max) { h = (g - b) / delta; }
-			else if (g == max) { h = 2 + (b - r) / delta; }
-			else { h = 4 + (r - g) / delta; }
+			if (r == max) h = (g - b) / delta;
+			else if (g == max) h = 2 + (b - r) / delta;
+			else h = 4 + (r - g) / delta;
 			
 			h*= 60;
 			h = h % 360;
@@ -485,6 +539,63 @@
 			b : Math.round((1-y) * 255)
 		};
 	};
+	
+	/**
+	 * Conversion hsv en hsl
+	 * @param h teinte (0 à 360)
+	 * @param s saturation (0 à 100)
+	 * @param v valeur (0 à 100)
+	 * @returns {Object} avec les propriétés h (0 à 360), s (0 à 100), l  (0 à 100)
+	 */
+	JSYG.Color.hsv2hsl = function(h,s,v) {
+
+		s/=100;
+		v/=100;
+		
+		var l = (2-s)*v,
+			sl = s*v;
+		
+		sl /= (l <= 1) ? l : 2 - l;
+		l /= 2;
+		
+		return {h:h,s:sl*100,l:l*100};
+	};
+	
+	/**
+	 * Conversion hsl en rgb
+	 * @param h teinte (0 à 360)
+	 * @param s saturation (0 à 100)
+	 * @param l lumière (0 à 100)
+	 * @returns {Object} avec les propriétés r, g, b (de 0 à 255)
+	 */
+	JSYG.Color.hsl2rgb = function(h,s,l) {
+
+		var hsv = JSYG.Color.hsl2hsv(h,s,l);
+		return JSYG.Color.hsv2rgb(hsv.h,hsv.s,hsv.v);
+	};
+	
+	/**
+	 * Conversion hsl en hsv
+	 * @param h teinte (0 à 360)
+	 * @param s saturation (0 à 100)
+	 * @param l lumière (0 à 100)
+	 * @returns {Object} avec les propriétés h (0 à 360), s (0 à 100), v (0 à 100)
+	 */
+	JSYG.Color.hsl2hsv = function(h,s,l) {
+		
+		s/=100;
+		l/=100;
+
+		var sv, v;
+		
+		l *= 2;
+		s *= (l <= 1) ? l : 2 - l;
+		v = (l + s) / 2;
+		sv = (2 * s) / (l + s);
+		
+		return {h:h,s:sv*100,v:v*100};
+	};
+	
 	
 	/**
 	 * Renvoie une couleur au hasard sous forme de chaîne de caract�res
