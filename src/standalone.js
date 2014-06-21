@@ -1,6 +1,10 @@
-(function() {
+require([],function() {
 	
 	"use strict";
+	
+	function JSYG() {
+		
+	}
 	
 	/**
 	* exécute une fonction sur chaque élément de la liste.
@@ -63,26 +67,7 @@
 				
 		return target;
 	};
-	
-	/**
-	 * Teste si l'argument est un objet pur (instance de Object, sans h�ritage). Tir� de jQuery isPlainObject.
-	 * @param obj
-	 * @returns {Boolean}
-	 */
-	JSYG.isPlainObject = function(obj) {
-				
-		if (!obj || typeof obj !== "object" || obj.nodeType || JSYG.isWindow(obj)) return false;
 		
-		try {
-			if ( obj.constructor && !obj.hasOwnProperty("constructor") && !obj.constructor.prototype.hasOwnProperty("isPrototypeOf") ) return false;
-		} catch (e) { return false; }
-		
-		var key;
-		for (key in obj) {}
-		
-		return key == null || obj.hasOwnProperty(key);
-	};
-	
 	/**
 	 * Teste si l'argument est un objet window
 	 * @param obj
@@ -92,25 +77,9 @@
 		//pas terrible, mais c'est la méthode jQuery
 		return !!(typeof obj === 'object' && obj!==null && 'setInterval' in obj);
 	};
-	
-	//tir� de jQuery
-	var class2type = {};
-	
-	"Boolean Number String Function Array Date RegExp Object".split(" ").forEach(function(name) {
-		class2type[ "[object " + name + "]" ] = name.toLowerCase();
-	});
-	
+		
 	/**
-	 * Renvoie le type d'objet natif javascript (boolean,number,string,function,array,date,regexp,null,undefined,object)
-	 * @param obj
-	 * @returns {String}
-	 */
-	JSYG.type = function(obj) {
-		return obj == null ? String( obj ) : class2type[ Object.prototype.toString.call(obj) ] || "object";
-	};
-	
-	/**
-	 * Teste si l'argument est num�rique (au sens large)
+	 * Teste si l'argument est numérique (au sens large)
 	 * @param arg
 	 * @returns {Boolean}
 	 * @example JSYG.isNumeric("14") === true
@@ -136,9 +105,6 @@
 			    catch(e) {
 			    	for (i=0,N=list.length;i<N;i++) tab.push(list[i]);
 			    }
-			}
-			else if (list.numberOfItems!=null && JSYG.type(list.getItem) === 'function') { //SVGList
-				for (i=0,N=list.numberOfItems;i<N;i++) tab.push(list.getItem(i));
 			}
 		}
 		
@@ -193,7 +159,7 @@
 	
 	/**
 	 * eval "propre"
-	 * @param {String,Object} data : chaîne javascript ou noeud xml/html à �valuer
+	 * @param {String,Object} data : chaîne javascript ou noeud xml/html à évaluer
 	 */
 	JSYG.globalEval = function(data) {
 		
@@ -201,7 +167,7 @@
 	
 		if (typeof data === 'object' && data.getElementsByTagName) {
 			allscript = data.getElementsByTagName('script');
-			for (i=0,N=allscript.length;i<N;i++) { JSYG.globalEval(allscript.item(i).text); }
+			for (i=0,N=allscript.length;i<N;i++) JSYG.globalEval(allscript.item(i).text);
 			return;
 		}
 	
@@ -242,9 +208,9 @@
 	 */
 	JSYG.prototype.data = function(key,value) {
 
-		if (typeof(key) == 'object') { //appel r�cursif si on passe un objet en paramêtre
+		if (typeof(key) == 'object') { //appel récursif si on passe un objet en paramêtre
 			for (var n in key) {
-				if (key.hasOwnProperty(n)) { this.data(n,key[n]); }
+				if (key.hasOwnProperty(n)) this.data(n,key[n]);
 			}
 			return this;
 		}
@@ -259,7 +225,7 @@
 					
 			//lecture
 			if (value == null) { val = cacheData[ind] && cacheData[ind][key]; return false; }
-			else { cacheData[ind][key] = value; }
+			else cacheData[ind][key] = value;
 			
 			return null;
 		});
@@ -298,10 +264,10 @@
 	};
 	
 	/**
-	 * Clone le noeud DOM (et ses enfants). Les écouteurs d'évènements ne sont pas clon�s.
-	 * @returns {JSYG} objet clon�
+	 * Clone le noeud DOM (et ses enfants). Les écouteurs d'évènements ne sont pas clonés.
+	 * @returns {JSYG} objet cloné
 	 */
-	JSYG.prototype.clone = function(/*events*/) {
+	JSYG.prototype.clone = function() {
 		
 		var list = [];
 		
@@ -309,13 +275,13 @@
 					
 			var clone = this.cloneNode(true);
 					
-			//tir� de jQuery
+			//tiré de jQuery
 			if (!JSYG.support.cloneEvent) { //IE
 				
 				clone[propData] = null;
 				
 				// We do not need to do anything for non-Elements
-				if ( clone.nodeType !== 1 ) { return null; }
+				if ( clone.nodeType !== 1 ) return null;
 				// clearAttributes removes the attributes, which we don't want, but also removes the attachEvent events, which we *do* want
 				clone.clearAttributes();
 				// mergeAttributes, in contrast, only merges back on the original attributes, not the events
@@ -323,8 +289,6 @@
 				
 				clone[propData] = undefined;
 			}
-			
-			//if (events) { new JSYG(clone).cloneEvents(this); }
 			
 			list.push(clone);
 			
@@ -355,7 +319,7 @@
 	JSYG.prototype.empty = function() {
 		
 		this.each(function() {
-			while (this.firstChild) { this.removeChild(this.firstChild); }
+			while (this.firstChild) this.removeChild(this.firstChild);
 		});
 		
 		return this;
@@ -369,7 +333,7 @@
 	var elementDisplay = {};
 	
 	/**
-	* Renvoie le display par défaut de l'élément. Tir� de zepto.js. Peut mieux faire.
+	* Renvoie le display par défaut de l'élément. Tiré de zepto.js. Peut mieux faire.
 	*/
 	function defaultDisplay(obj) {
 	
@@ -463,9 +427,9 @@
 			else if (this[0].style && this[0].style[jsFormat]) val = this[0].style[jsFormat];
 			 //propriété standard
 			else if (this[0].getAttribute && this[0].getAttribute(cssFormat)) val = this[0].getAttribute(cssFormat);
-			 //�crite dans une feuille de style (W3C)
+			 //écrite dans une feuille de style (W3C)
 			else if (window.getComputedStyle) val = window.getComputedStyle(this[0],null).getPropertyValue(cssFormat) || undefined; //sinon renvoie une chaîne nulle
-			 //�crite dans une feuille de style (IE)
+			 //écrite dans une feuille de style (IE)
 			else if (this[0].currentStyle && this[0].currentStyle[jsFormat]) return this[0].currentStyle[jsFormat];
 			//compatibilité IE
 			else if (prop == 'cssFloat') return this.css('styleFloat');
@@ -1467,5 +1431,6 @@
 		
 	}());
 	
+	return JSYG;
 	
-}(this.jQuery || this.JSYG));
+});

@@ -95,7 +95,7 @@ require([ "JSYG", "StdConstruct", "Promise" ], function(JSYG) {
 		});		
 	};
 	
-	JSYG.DataBase.prototype["delete"] = function() {
+	JSYG.DataBase.prototype.drop = function() {
 		
 		if (!this._name) throw new Error("Aucun nom de base n'a été défini");
 		

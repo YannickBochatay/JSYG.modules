@@ -170,7 +170,7 @@ require(["Style","Transform","Vect"],function() {
 					}
 					else {
 						
-						if (parent.position == 'static') parent = parent.offsetParent();
+						if (parent.css('position') == 'static') parent = parent.offsetParent();
 						dim = this.getDim(parent);
 					}
 					
@@ -605,61 +605,7 @@ require(["Style","Transform","Vect"],function() {
 						}						
 						else $this.attr(opt);
 					}
-					else {
-
-						position = $this.css('position');
-						
-						decx = parseFloat($this.css('marginLeft') || 0);
-						decy = parseFloat($this.css('marginTop') || 0);
-								
-						if ('x' in opt || 'y' in opt) {
-													
-							if (!position || position === 'static') {
-								
-								if (node.parentNode) {
-									$this.css('position','relative');
-									position = 'relative';
-								}
-								else $this.css('position','absolute');
-							}
-							
-							if (position == 'relative'){
-								
-								dim = $this.getDim();
-								
-								if ('x' in opt) decx = dim.x - parseFloat($this.css('left') || 0);
-								if ('y' in opt) decy = dim.y - parseFloat($this.css('top') || 0);
-							}
-						}
-																														
-						if ("x" in opt) node.style.left = opt.x - decx + 'px';
-						if ("y" in opt) node.style.top = opt.y - decy + 'px';
-						
-						if ("width" in opt) {
-									
-							if (tag == 'svg') $this.css('width',opt.width).attr('width',opt.width);
-							else {
-								
-								node.style.width = Math.max(0,opt.width
-								-parseFloat($this.css('border-left-width') || 0)
-								-parseFloat($this.css('padding-left') || 0)
-								-parseFloat($this.css('border-right-width') || 0)
-								-parseFloat($this.css('padding-right') || 0))+'px';
-							}
-						}
-									
-						if ("height" in opt) {
-									
-							if (tag == 'svg') $this.css('height',opt.height).attr('height',opt.height);
-							else {
-								node.style.height = Math.max(0,opt.height
-								-parseFloat($this.css('border-top-width') || 0)
-								-parseFloat($this.css('padding-top') || 0)
-								-parseFloat($this.css('border-bottom-width') || 0)
-								-parseFloat($this.css('padding-bottom') || 0))+'px';
-							}
-						}
-					}
+					else $.fn.width.apply(this,a);
 				
 					break;
 			}

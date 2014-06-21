@@ -554,8 +554,8 @@ require(["JSYG","Matrix","Vect","Dimensions"],function() {
 	
 							if (seg['x'+ind] == null && seg['y'+ind] == null) return;
 							
-							if (seg['x'+ind] != null) { x = seg['x'+ind]; }
-							if (seg['y'+ind] != null) { y = seg['y'+ind]; }
+							if (seg['x'+ind] != null) x = seg['x'+ind];
+							if (seg['y'+ind] != null) y = seg['y'+ind];
 							
 							if (x!=null && y!=null) {
 								var point = new JSYG.Vect(x,y).mtx(mtx);

@@ -5,8 +5,8 @@
 	if (typeof define == 'function' && define.amd) {
 		
 		if (!$) {
-			
-			define(['core'], function($) {
+									
+			define(['jquery'], function($) {
 				return factory(root,$);
 			});
 		}
@@ -14,9 +14,9 @@
 			return factory(root,$);
 		});
 	}
-	else factory(root,$,true);
+	else factory(root,$);
 
-}(this, function(window, $, global) {
+}(this, function(window, $) {
 			
 	"use strict";
 	
@@ -622,7 +622,94 @@
 		return this;
 	};
 	
-	JSYG.isPlainObject = $.isPlainObject;
+	JSYG.prototype.width = function(val) {
+		
+		if (val == null) {	
+			if (this.isSVG() && !this.isSVGroot()) return this[0].getBBox().width;
+			else return $.fn.width.call(this);
+		}
+		
+		return this.each(function(i) {
+			
+			var $this = new JSYG(this),
+				width;
+							
+			if (!$this.isSVG()) return $.fn.width.apply($this,val);
+			
+			width = parseFloat( (typeof val == "function") ? val.call(this,i,$this.width()) : val );
+			
+			switch (this.tagName) {
+			
+				case 'circle' :
+					this.setAttribute('r',width/2);
+					break;
+				
+				case 'ellipse' :
+					this.setAttribute('rx',width/2);
+					break;
+				
+				default :
+					if (this.getAttribute("width") != null) this.setAttribute("width",width);
+					else throw new Error("You can't modify width of this element");
+			}	
+		});
+	};
+	
+	
+	
+	JSYG.prototype.height = function(val) {
+		
+		if (val == null) {	
+			if (this.isSVG() && !this.isSVGroot()) return this[0].getBBox().height;
+			else return $.fn.height.call(this);
+		}
+		
+		return this.each(function() {
+			
+			var $this = new JSYG(this),
+				height;
+			
+			if (!$this.isSVG()) return $.fn.height.apply($this,val);
+			
+			height = parseFloat( (typeof val == "function") ? val.call(this,i,$this.height()) : val );
+			
+			switch (this.tagName) {
+			
+				case 'circle' :
+					this.setAttribute('r',height/2);
+					break;
+				
+				case 'ellipse' :
+					this.setAttribute('ry',height/2);
+					break;
+				
+				default :
+					if (this.getAttribute("height") != null) this.setAttribute("height",height);
+					else throw new Error("You can't modify height of this element");
+			}
+		});
+	};
+	
+	JSYG.prototype.innerWidth = function() {
+		if (!this.isSVG() || this.isSVGRoot()) return $.fn.innerWidth.call(this);
+		else return this.width();
+	};
+	
+	JSYG.prototype.innerHeight = function() {
+		if (!this.isSVG() || this.isSVGRoot()) return $.fn.innerHeight.call(this);
+		else return this.height();
+	};
+	
+	JSYG.prototype.outerWidth = function() {
+		if (!this.isSVG() || this.isSVGRoot()) return $.fn.outerWidth.call(this);
+		else return this.width();
+	};
+	
+	JSYG.prototype.outerHeight = function() {
+		if (!this.isSVG() || this.isSVGRoot()) return $.fn.outerHeight.call(this);
+		else return this.height();
+	};
+	
 	
 	JSYG.Point = function(x,y) {
 		
@@ -652,8 +739,17 @@
 			return new JSYG.Point(point.x,point.y);
 		}
 	};
+	
+	
+	//Récupère toutes les fonctions statiques
+	(function() {
+		for (var n in $) {
+			if ($.hasOwnProperty(n) && !JSYG.hasOwnProperty(n)) JSYG[n] = $[n];
+		}
+	}());
+		
+	if (typeof require == "function" && !JSYG.require) JSYG.require = require;
 				
-	//if (global) window.JSYG = JSYG;
 	window.JSYG = JSYG;
 	
 	return JSYG;

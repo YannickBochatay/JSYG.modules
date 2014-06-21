@@ -2,12 +2,12 @@ require.config({
 	 paths: {
 	    "jquery": '../bower_components/jquery/dist/jquery',
 	    "zepto": '../bower_components/zepto/zepto',
-	    "jsyg": '../src/JSYG',
+	    "jsyg": '../src/JSYG'
 	 },
 	 urlArgs: "bust=" + new Date()
 });
 
-require(["jquery","jsyg"],function(jQuery,JSYG) {
+require(["jquery","jsyg"],function($,JSYG) {
 		
 	module("JSYG core");
 			
@@ -36,11 +36,11 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		
 		equal( container[0].tagName , "DIV", "DIV" );
 		
-		container.append(div);
+		container.append(div[0]);
 		
 		equal( container[0].tagName , "DIV", "DIV" );
 		
-		svg.appendTo(div);
+		svg.appendTo(div[0]);
 		
 		equal( container[0].tagName , "DIV", "DIV" );
 		
@@ -59,7 +59,7 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		
 		div.css("background-color",color);
 		
-		var rect = new JSYG('<rect>').attr({width:50,height:50,fill:color}).appendTo(svg);
+		var rect = new JSYG('<rect>').attr({width:50,height:50,fill:color}).appendTo(svg[0]);
 		
 		rect[0].style.stroke = color;
 		rect[0].style.opacity = 0.5;
@@ -84,7 +84,7 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		
 		div.addClass("red strokeRed");
 		
-		svg = new JSYG('<rect>').attr({width:50,height:50}).appendTo(svg);
+		svg = new JSYG('<rect>').attr({width:50,height:50}).appendTo(svg[0]);
 		svg.addClass("red strokeRed");
 		
 		ok( div.hasClass("red"), "addClass et hasClass sur élements HTML");
@@ -151,8 +151,8 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 	
 	test("Traversing",function() {
 		
-		var a = new JSYG('<a>').appendTo(container);
-		var b = $('<a>').appendTo(container);
+		var a = new JSYG('<a>').appendTo(container[0]);
+		var b = $('<a>').appendTo(container[0]);
 		
 		equal( container[0].tagName , "DIV", "DIV" );
 		equal( a.parent()[0].tagName , container[0].tagName, "Parent d'élément HTML" );
@@ -165,6 +165,78 @@ require(["jquery","jsyg"],function(jQuery,JSYG) {
 		
 		equal( container[0].tagName , "DIV", "DIV" );
 		equal( b[0].tagName , "A", "Parent d'élément HTML" );
+		
+	});
+	
+	test("Dimensions",function() {
+		
+		var svg = new JSYG('<svg>')
+		.css({
+			"position":"absolute",
+			"top":50,
+			"left":50,
+			"width":500,
+			"height":500
+		})
+		.appendTo(container);
+		
+		var rect = new JSYG('<rect>')
+		.attr({
+			width:100,
+			height:100,
+			x:50,
+			y:50
+		})
+		.appendTo('svg');
+		
+		var ellipse = new JSYG('<ellipse>')
+		.attr({
+			cx:100,
+			cy:100,
+			rx:50,
+			ry:50
+		})
+		.appendTo('svg');
+		
+		var line = new JSYG('<line>')
+		.attr({
+			x1:100,
+			y1:50,
+			x2:200,
+			y2:100
+		})
+		.appendTo('svg');
+		
+		var div = new JSYG('<div>')
+		.css({
+			position:"absolute",
+			top:50,
+			left:50,
+			width:100,
+			height:150
+		})
+		.appendTo(container);
+		
+		equal( svg.width(), 500, "Taille des balises SVG inline dans la page" );
+		equal( svg.height(), 500, "Taille des balises SVG inline dans la page" );
+		
+		equal( ellipse.width() , 100, "Taille des éléments SVG" );
+		equal( ellipse.height() , 100, "Taille des éléments SVG" );
+		
+		equal( line.width() , 100, "Taille des éléments SVG" );
+		equal( line.height() , 50, "Taille des éléments SVG" );
+		
+		equal( rect.width() , 100, "Taille des éléments SVG" );
+		equal( rect.height() , 100, "Taille des éléments SVG" );
+		
+		equal( div.width() , 100, "Taille des éléments HTML" );
+		equal( div.height() , 150, "Taille des éléments HTML" );
+		
+		rect.width(200).height(200);
+		
+		equal( rect.width() , 200, "Taille des éléments SVG" );
+		equal( rect.height() , 200, "Taille des éléments SVG" );
+		
 		
 	});
 	
