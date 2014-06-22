@@ -1,4 +1,4 @@
-require(["JSYG"],function() {
+define(["JSYG"],function(JSYG) {
 	
 	"use strict";
 	
@@ -405,4 +405,4 @@ require(["JSYG"],function() {
 		return new JSYG(node);
 	};
 	
-}());
+});

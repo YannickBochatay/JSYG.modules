@@ -1,4 +1,4 @@
-require(["Vect"],function() {
+define(["JSYG","Vect"],function(JSYG) {
 	
 	"use strict";
 	
@@ -7,7 +7,7 @@ require(["Vect"],function() {
 	 * Constructeur de matrices JSYG
 	 * @param arg optionnel, si défini reprend les coefficients de l'argument. arg peut être
 	 * une instance de SVGMatrix (DOM SVG) ou de JSYG.Matrix.
-	 * On peut �galement passer 6 arguments num�riques pour définir chacun des coefficients.
+	 * On peut également passer 6 arguments numériques pour définir chacun des coefficients.
 	 * @returns {JSYG.Matrix}
 	 */
 	JSYG.Matrix = function(arg) {

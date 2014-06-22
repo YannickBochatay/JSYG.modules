@@ -239,9 +239,7 @@ require(["jquery","jsyg"],function($,JSYG) {
 		
 		
 	});
-	
-	
-	/*
+		
 	test("Gestion du positionnement",function() {
 		
 		var svg = new JSYG('<svg>')
@@ -272,12 +270,16 @@ require(["jquery","jsyg"],function($,JSYG) {
 		.appendTo(container);
 		
 		var offsetParent = $(container).css("position","relative").offset();
-				
-		equal( svg.offset() , {top:offsetParent.top+50,left:offsetParent.left+50}, "Position des balises SVG inline dans la page" );
-		equal( rect.offset() , {top:offsetParent.top+100,left:offsetParent.left+100}, "Position des éléments SVG dans la page" );
-		equal( div.offset() , {top:offsetParent.top+50,left:offsetParent.left+50}, "Position des éléments HTML dans la page" );
-		equal( offsetParent , {top:offsetParent.top,left:offsetParent.left}, "Position des éléments HTML dans la page" );
-	});*/
+					
+		equal( Math.round(svg.offset().top) , Math.round(offsetParent.top+50) , "Position des balises SVG inline dans la page" );
+		equal( Math.round(svg.offset().left) , Math.round(offsetParent.left+50) , "Position des balises SVG inline dans la page" );
+		/*
+		equal( Math.round(rect.offset().top) , Math.round(offsetParent.top+100) , "Position des balises SVG inline dans la page" );
+		equal( Math.round(rect.offset().left) , Math.round(offsetParent.left+100) , "Position des balises SVG inline dans la page" );
+		*/
+		equal( Math.round(div.offset().top) , Math.round(offsetParent.top+50) , "Position des balises SVG inline dans la page" );
+		equal( Math.round(div.offset().left) , Math.round(offsetParent.left+50) , "Position des balises SVG inline dans la page" );
+	});
 	
 	
 	

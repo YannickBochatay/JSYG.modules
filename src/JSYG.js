@@ -1,6 +1,6 @@
 (function(root, factory) {
 
-	var $ = root.JSYG || root.jQuery;
+	var $ = root.jQuery;
 	
 	if (typeof define == 'function' && define.amd) {
 		
@@ -255,10 +255,18 @@
 		
 	JSYG.prototype.css = function(prop,val) {
 		
+		var n=null,obj;
+		
 		if ($.isPlainObject(prop)) {
 			
-			for (var n in prop) this.css(n,prop[n]);
+			for (n in prop) this.css(n,prop[n]);
 			return this;
+		}
+		else if (Array.isArray(prop)) {
+			
+			obj = {};
+			for (n=0;n<prop.length;n++) obj[prop[n]] = this.css(prop[n]);
+			return obj;
 		}
 		else if ($.isFunction(val)) {
 			
@@ -267,7 +275,7 @@
 				$this.css( val.call(this,i,$this.css(prop)) );
 			});
 		}
-		
+				
 		var cssProp = dasherize(prop),
 			jsProp = camelize(prop);
 		
@@ -425,10 +433,10 @@
 				
 			}
 			else offset = this[0].getBoundingClientRect();
-												
+															
 			offset = {
-				left : offset.left + window.pageXOffset - document.documentElement.clientLeft,
-				top : offset.top + window.pageYOffset - document.documentElement.clientTop
+				left : Math.round( offset.left + window.pageXOffset - document.documentElement.clientLeft ),
+				top : Math.round( offset.top + window.pageYOffset - document.documentElement.clientTop )
 			};
 			
 			return offset;
@@ -649,8 +657,7 @@
 					break;
 				
 				default :
-					if (this.getAttribute("width") != null) this.setAttribute("width",width);
-					else throw new Error("You can't modify width of this element");
+					this.setAttribute("width",width);
 			}	
 		});
 	};
@@ -684,8 +691,7 @@
 					break;
 				
 				default :
-					if (this.getAttribute("height") != null) this.setAttribute("height",height);
-					else throw new Error("You can't modify height of this element");
+					this.setAttribute("height",height);
 			}
 		});
 	};
@@ -726,6 +732,11 @@
 			
 		constructor : JSYG.Point,
 		
+		/**
+		 * Applique une matrice de transformation 
+		 * @param mtx instance de JSYG.Matrix (ou SVGMatrix)
+		 * @returns nouvelle instance
+		 */
 		mtx : function(mtx) {
 		
 			if (JSYG.Matrix && (mtx instanceof JSYG.Matrix)) mtx = mtx.mtx;
@@ -736,7 +747,7 @@
 			point.y = this.y;
 			point = point.matrixTransform(mtx);
 			
-			return new JSYG.Point(point.x,point.y);
+			return new this.constructor(point.x,point.y);
 		}
 	};
 	
