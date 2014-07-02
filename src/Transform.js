@@ -31,7 +31,7 @@ define(["JSYG","Matrix","Vect","Dimensions"],function(JSYG) {
 		pivotX = (pivotX != null) ? pivotX : transfOrigin[0];
 		pivotY = (pivotY != null) ? pivotY : transfOrigin[1];
 		
-		if ($.isNumeric(pivotX) && $.isNumeric(pivotY)) return JSYG.Vect(parseFloat(pivotX),parseFloat(pivotY));
+		if ($.isNumeric(pivotX) && $.isNumeric(pivotY)) return new JSYG.Vect(parseFloat(pivotX),parseFloat(pivotY));
 				
 		var box = this.getDim(), // dimensions réelles de l'élément (avant transformation(s))
 			translX,translY, 
