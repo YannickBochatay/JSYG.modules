@@ -291,7 +291,7 @@
 					
 						val = this[0].getAttribute(cssProp);
 					
-						if (!val && window.getComputedStyle)
+						if (val == null && window.getComputedStyle)
 							val = window.getComputedStyle(this[0],null).getPropertyValue(cssProp);
 					}
 				}
@@ -305,9 +305,8 @@
 			
 			var $this = new JSYG(this);
 			
-			if ($this.isSVG() && JSYG.svgCssProperties.indexOf(cssProp) != -1)
-				this.setAttribute(cssProp,val);
-			
+			if ($this.isSVG()) this.setAttribute(cssProp,val);
+			//if (JSYG.svgCssProperties.indexOf(cssProp) != -1) $.fn.css.call($this,prop,val);
 			$.fn.css.call($this,prop,val);
 		});
 	};
@@ -630,92 +629,88 @@
 		return this;
 	};
 	
-	JSYG.prototype.width = function(val) {
+	(function() {
 		
-		if (val == null) {	
-			if (this.isSVG() && !this.isSVGroot()) return this[0].getBBox().width;
-			else return $.fn.width.call(this);
-		}
+		var hookWidthOri = $.cssHooks.width,
+			hookHeightOri = $.cssHooks.height;
 		
-		return this.each(function(i) {
-			
-			var $this = new JSYG(this),
-				width;
-							
-			if (!$this.isSVG()) return $.fn.width.apply($this,val);
-			
-			width = parseFloat( (typeof val == "function") ? val.call(this,i,$this.width()) : val );
-			
-			switch (this.tagName) {
-			
-				case 'circle' :
-					this.setAttribute('r',width/2);
-					break;
+		$.cssHooks.width = {
 				
-				case 'ellipse' :
-					this.setAttribute('rx',width/2);
-					break;
+			get: function( elem, computed, extra ) {
 				
-				default :
-					this.setAttribute("width",width);
-			}	
-		});
-	};
-	
-	
-	
-	JSYG.prototype.height = function(val) {
-		
-		if (val == null) {	
-			if (this.isSVG() && !this.isSVGroot()) return this[0].getBBox().height;
-			else return $.fn.height.call(this);
-		}
-		
-		return this.each(function() {
-			
-			var $this = new JSYG(this),
-				height;
-			
-			if (!$this.isSVG()) return $.fn.height.apply($this,val);
-			
-			height = parseFloat( (typeof val == "function") ? val.call(this,i,$this.height()) : val );
-			
-			switch (this.tagName) {
-			
-				case 'circle' :
-					this.setAttribute('r',height/2);
-					break;
+				var $elem = new JSYG(elem);
 				
-				case 'ellipse' :
-					this.setAttribute('ry',height/2);
-					break;
+				if (!$elem.isSVG()) return hookWidthOri.get.apply(null,arguments);
+				else try { return elem.getBBox && elem.getBBox().width+"px"; }
+				catch (e) { return null; }
+			},
+			
+			set: function( elem, value ) {
 				
-				default :
-					this.setAttribute("height",height);
+				var $elem = new JSYG(elem),
+					width = hookWidthOri.set.apply(null,arguments);
+								
+				if (!$elem.isSVG()) return width;
+				
+				width = parseFloat( (typeof value == "function") ? value.call(elem,i,$elem.width()) : value );
+				
+				switch (elem.tagName) {
+				
+					case 'circle' :
+						elem.setAttribute('r',width/2);
+						break;
+					
+					case 'ellipse' :
+						elem.setAttribute('rx',width/2);
+						break;
+					
+					default :
+						elem.setAttribute("width",width);
+				}
+				
+				return width+"px";
 			}
-		});
-	};
-	
-	JSYG.prototype.innerWidth = function() {
-		if (!this.isSVG() || this.isSVGRoot()) return $.fn.innerWidth.call(this);
-		else return this.width();
-	};
-	
-	JSYG.prototype.innerHeight = function() {
-		if (!this.isSVG() || this.isSVGRoot()) return $.fn.innerHeight.call(this);
-		else return this.height();
-	};
-	
-	JSYG.prototype.outerWidth = function() {
-		if (!this.isSVG() || this.isSVGRoot()) return $.fn.outerWidth.call(this);
-		else return this.width();
-	};
-	
-	JSYG.prototype.outerHeight = function() {
-		if (!this.isSVG() || this.isSVGRoot()) return $.fn.outerHeight.call(this);
-		else return this.height();
-	};
-	
+		};
+		
+		$.cssHooks.height = {
+				
+			get: function( elem, computed, extra ) {
+				
+				var $elem = new JSYG(elem);
+				
+				if (!$elem.isSVG()) return hookHeightOri.get.apply(null,arguments);
+				else try { return elem.getBBox && elem.getBBox().height+"px"; }
+				catch (e) { return null; }
+			},
+			
+			set: function( elem, value ) {
+				
+				var $elem = new JSYG(elem),
+					height = hookHeightOri.set.apply(null,arguments);
+								
+				if (!$elem.isSVG()) return height;
+				
+				height = parseFloat( (typeof value == "function") ? value.call(elem,i,$elem.height()) : value );
+				
+				switch (this.tagName) {
+				
+					case 'circle' :
+						elem.setAttribute('r',height/2);
+						break;
+					
+					case 'ellipse' :
+						elem.setAttribute('ry',height/2);
+						break;
+					
+					default :
+						elem.setAttribute("height",height);
+				}
+				
+				return height+"px";
+			}
+		};
+		
+	}());
 	
 	JSYG.Point = function(x,y) {
 		
@@ -758,9 +753,7 @@
 			if ($.hasOwnProperty(n) && !JSYG.hasOwnProperty(n)) JSYG[n] = $[n];
 		}
 	}());
-		
-	if (typeof require == "function" && !JSYG.require) JSYG.require = require;
-				
+						
 	window.JSYG = JSYG;
 	
 	return JSYG;
