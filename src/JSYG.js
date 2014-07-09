@@ -629,7 +629,41 @@
 		return this;
 	};
 	
-	(function() {
+	JSYG.Point = function(x,y) {
+		
+		if (typeof x === 'object' && y == null) {
+			y = x.y;
+			x = x.x;
+		}
+		
+		this.x = (typeof x == "number") ? x : parseFloat(x);
+		this.y = (typeof y == "number") ? y : parseFloat(y);
+	};
+	
+	JSYG.Point.prototype = {
+			
+		constructor : JSYG.Point,
+		
+		/**
+		 * Applique une matrice de transformation 
+		 * @param mtx instance de JSYG.Matrix (ou SVGMatrix)
+		 * @returns nouvelle instance
+		 */
+		mtx : function(mtx) {
+		
+			if (JSYG.Matrix && (mtx instanceof JSYG.Matrix)) mtx = mtx.mtx;
+			if (!mtx) return new JSYG.Point(this.x,this.y);
+			
+			var point = svg.createSVGPoint();
+			point.x = this.x;
+			point.y = this.y;
+			point = point.matrixTransform(mtx);
+			
+			return new this.constructor(point.x,point.y);
+		}
+	};
+	
+	$(function() {
 		
 		var hookWidthOri = $.cssHooks.width,
 			hookHeightOri = $.cssHooks.height;
@@ -638,9 +672,7 @@
 				
 			get: function( elem, computed, extra ) {
 				
-				var $elem = new JSYG(elem);
-				
-				if (!$elem.isSVG()) return hookWidthOri.get.apply(null,arguments);
+				if (elem.namespaceURI != NS.svg) return hookWidthOri.get.apply(null,arguments);
 				else try { return elem.getBBox && elem.getBBox().width+"px"; }
 				catch (e) { return null; }
 			},
@@ -676,19 +708,16 @@
 				
 			get: function( elem, computed, extra ) {
 				
-				var $elem = new JSYG(elem);
-				
-				if (!$elem.isSVG()) return hookHeightOri.get.apply(null,arguments);
+				if (elem.namespaceURI != NS.svg) return hookHeightOri.get.apply(null,arguments);
 				else try { return elem.getBBox && elem.getBBox().height+"px"; }
 				catch (e) { return null; }
 			},
 			
 			set: function( elem, value ) {
 				
-				var $elem = new JSYG(elem),
-					height = hookHeightOri.set.apply(null,arguments);
+				var height = hookHeightOri.set.apply(null,arguments);
 								
-				if (!$elem.isSVG()) return height;
+				if (elem.namespaceURI != NS.svg) return height;
 				
 				height = parseFloat( (typeof value == "function") ? value.call(elem,i,$elem.height()) : value );
 				
@@ -709,42 +738,45 @@
 				return height+"px";
 			}
 		};
-		
-	}());
-	
-	JSYG.Point = function(x,y) {
-		
-		if (typeof x === 'object' && y == null) {
-			y = x.y;
-			x = x.x;
-		}
-		
-		this.x = (typeof x == "number") ? x : parseFloat(x);
-		this.y = (typeof y == "number") ? y : parseFloat(y);
-	};
-	
-	JSYG.Point.prototype = {
+		/*
+		JSYG.svgCssProperties.forEach(function(prop) {
 			
-		constructor : JSYG.Point,
-		
-		/**
-		 * Applique une matrice de transformation 
-		 * @param mtx instance de JSYG.Matrix (ou SVGMatrix)
-		 * @returns nouvelle instance
-		 */
-		mtx : function(mtx) {
-		
-			if (JSYG.Matrix && (mtx instanceof JSYG.Matrix)) mtx = mtx.mtx;
-			if (!mtx) return new JSYG.Point(this.x,this.y);
+			var hookOri = $.cssHooks[prop],
+				camelized = camelize(prop),
+				dasherized = dasherize(prop);
 			
-			var point = svg.createSVGPoint();
-			point.x = this.x;
-			point.y = this.y;
-			point = point.matrixTransform(mtx);
-			
-			return new this.constructor(point.x,point.y);
-		}
-	};
+			$.cssHooks[prop] = {
+				
+				get : function(elem, computed, extra) {
+					
+					var value = hookOri ? hookOri.get.apply(null,arguments) : $.css(elem,prop);
+					
+					if (elem.namespaceURI != NS.svg) return value;
+					else {
+						
+						if (elem.style) {
+							
+							value = elem.style[camelized];
+							
+							if (value == null && elem.getAttribute) {
+								
+								value = elem.getAttribute(dasherized);
+							
+								if (value == null && window.getComputedStyle)
+									value = window.getComputedStyle(this[0],null).getPropertyValue(dasherized);
+							}
+						}
+					}
+				},
+				
+				set : function(elem, value) {
+					elem.style[camelized] = value;
+					if (elem.namespaceURI == NS.svg) elem.setAttribute(dasherized,value);
+				}
+			};
+		});
+		*/
+	});
 	
 	
 	//Récupère toutes les fonctions statiques
