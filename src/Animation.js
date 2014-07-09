@@ -89,13 +89,13 @@ require(["Transform","Promise","Path"],function() {
 	function transfAnim(obj) {
 		
 		if (!JSYG.support.twoDimTransf) return false;
-		for (var n in obj) {  if (listTransf.indexOf(n)!==-1) return true; }
+		for (var n in obj) if (listTransf.indexOf(n)!==-1) return true;
 		return false;
 	}
 	
 	/**
-	 * Renvoie les deux points (d'affil�e) d'un chemin les plus �loign�s l'un de l'autre.
-	 * Cela permet d'ajouter un point sur la courbe l� où il y a le plus de "place".
+	 * Renvoie les deux points (d'affilée) d'un chemin les plus éloignés l'un de l'autre.
+	 * Cela permet d'ajouter un point sur la courbe là où il y a le plus de "place".
 	 */
 	function indMaxDistance(jPath) {
 		
@@ -209,7 +209,7 @@ require(["Transform","Promise","Path"],function() {
 		set : function(opt) {
 
 			for (var n in opt) {
-				if (n in this && opt[n]!==undefined) { this[n] = opt[n]; }
+				if (n in this && opt[n]!==undefined) this[n] = opt[n];
 			}
 			
 			return this;
@@ -294,9 +294,7 @@ require(["Transform","Promise","Path"],function() {
 			
 				decompose = jNode.getTransf();
 				
-				if (to.scale && !to.scaleX && !to.scaleY) {
-					to.scaleX = to.scaleY = to.scale;
-				}
+				if (to.scale && !to.scaleX && !to.scaleY) to.scaleX = to.scaleY = to.scale;
 				
 				for (n in decompose) {
 										
@@ -362,7 +360,7 @@ require(["Transform","Promise","Path"],function() {
 			
 				if (n == "d") continue;
 				
-				isXY == (n == "x") || (n == "y");
+				isXY = (n == "x") || (n == "y");
 				
 				if (isXY && tag == "text") this._from[n] = jNode.attr(n);
 				else if (isXY || isSVG && ['width','height'].indexOf(n)!==-1) this._from[n] = dim[n];
@@ -497,7 +495,7 @@ require(["Transform","Promise","Path"],function() {
 		},
 		
 		/**
-		 * Joue l'animation (l� où elle en est)
+		 * Joue l'animation (là où elle en est)
 		 * @returns {JSYG.Animation}
 		 */
 		play : function(opt) {
