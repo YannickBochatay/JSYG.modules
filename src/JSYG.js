@@ -305,7 +305,9 @@
 			
 			var $this = new JSYG(this);
 			
-			if ($this.isSVG()) this.setAttribute(cssProp,val);
+			if ($this.isSVG()) {
+				if (!$this.isSVGroot() || cssProp == "width" || cssProp == "height") this.setAttribute(cssProp,val);
+			}
 			//if (JSYG.svgCssProperties.indexOf(cssProp) != -1) $.fn.css.call($this,prop,val);
 			$.fn.css.call($this,prop,val);
 		});
@@ -663,7 +665,7 @@
 		}
 	};
 	
-	$(function() {
+	(function() {
 		
 		var hookWidthOri = $.cssHooks.width,
 			hookHeightOri = $.cssHooks.height;
@@ -672,7 +674,7 @@
 				
 			get: function( elem, computed, extra ) {
 				
-				if (elem.namespaceURI != NS.svg) return hookWidthOri.get.apply(null,arguments);
+				if (elem.namespaceURI != NS.svg || elem.tagName == 'svg' && elem.parentNode && elem.parentNode.namespaceURI != NS.svg) return hookWidthOri.get.apply(null,arguments);
 				else try { return elem.getBBox && elem.getBBox().width+"px"; }
 				catch (e) { return null; }
 			},
@@ -708,7 +710,7 @@
 				
 			get: function( elem, computed, extra ) {
 				
-				if (elem.namespaceURI != NS.svg) return hookHeightOri.get.apply(null,arguments);
+				if (elem.namespaceURI != NS.svg || elem.tagName == 'svg' && elem.parentNode && elem.parentNode.namespaceURI != NS.svg) return hookHeightOri.get.apply(null,arguments);
 				else try { return elem.getBBox && elem.getBBox().height+"px"; }
 				catch (e) { return null; }
 			},
@@ -776,7 +778,7 @@
 			};
 		});
 		*/
-	});
+	}());
 	
 	
 	//Récupère toutes les fonctions statiques
