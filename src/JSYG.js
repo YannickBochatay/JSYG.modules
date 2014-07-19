@@ -1,4 +1,4 @@
-(function(root, factory) {
+/*(function(root, factory) {
 
 	var $ = root.jQuery;
 	
@@ -17,10 +17,12 @@
 	else factory(root,$);
 
 }(this, function(window, $) {
+*/
+define("JSYG",[],function() {
 			
 	"use strict";
 	
-	if (!$) throw new Error("jQuery is needed");
+	if (!jQuery) throw new Error("jQuery is needed");
 	
 	var NS = {
 			html : 'http://www.w3.org/1999/xhtml',
@@ -29,7 +31,8 @@
 		},
 		rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 		rsvgLink = /^<(svg:a)\s*\/?>(?:<\/\1>|)$/,
-		svg = window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg');
+		svg = window.document && window.document.createElementNS && window.document.createElementNS(NS.svg,'svg'),
+		$ = jQuery;
 	
 	function JSYG(arg,context) {
 		
@@ -780,6 +783,16 @@
 		*/
 	}());
 	
+	/**
+	 * Arrondi d'un nombre avec nombre de décimales précisé
+	 * @param number
+	 * @param precision nombre de décimales
+	 * @returns {Number}
+	 */
+	JSYG.round = function(number,precision) {
+		return Math.round(number * Math.pow(10,precision)) / Math.pow(10,precision);
+	};
+	
 	
 	//Récupère toutes les fonctions statiques
 	(function() {
@@ -792,4 +805,5 @@
 	
 	return JSYG;
 	
-}));
+//}));
+});

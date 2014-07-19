@@ -11,16 +11,6 @@ define(["JSYG","Style","String"],function(JSYG) {
 	};
 	
 	/**
-	 * Arrondi d'un nombre avec nombre de décimales précisé
-	 * @param number
-	 * @param precision nombre de décimales
-	 * @returns {Number}
-	 */
-	JSYG.round = function(number,precision) {
-		return Math.round(number * Math.pow(10,precision)) / Math.pow(10,precision);
-	};
-	
-	/**
 	 * Liste des balises des formes svg
 	 */
 	JSYG.svgShapes = ['circle','ellipse','line','polygon','polyline','path','rect'];

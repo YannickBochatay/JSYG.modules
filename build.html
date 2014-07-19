@@ -1,46 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        textarea {
-            width: 100%;
-            height: 20em;
-        }
-    </style>
-    <script src="bower_components/r.js/dist/r.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function (evt) {
-        document.getElementById('build').addEventListener('click', function (evt) {
-            requirejs.optimize({
-                baseUrl: 'src',
-                paths: {
-					"jquery": '../bower_components/jquery/dist/jquery'
-				},
-                include: ['JSYG',"Style","Utils","Ajax","AnimationQueue"],
-                out: function (text) {
-                    document.getElementById('output').value = text;
-                }
-            }, function (buildText) {
-                document.getElementById('buildMessages').value = buildText;
-            });
-        }, false);
-    }, false);
-    </script>
+	<meta charset="utf-8"/>
+    <style>textarea {
+	width: 100%;
+	height: 20em;
+}</style>
 </head>
 <body>
-    <h1>r.js in the browser</h1>
+    <h1>JSYG custom builder</h1>
+	<form>
+		<label>
+			<input type="radio" name="onlyjQuery" value="yes"/> I just want jQuery compatibility for SVG.
+		</label>
+		<label>
+			<input type="radio" name="onlyjQuery" value="no" checked="checked"/> I want more.
+		</label>
+		
+		<div id="more">
+			<p>Features</p>
+			<label>
+				<input type="checkbox" name="Path"/> paths
+			</label>
+			<label>
+				<input type="checkbox" name="Ajax"/> ajax
+			</label>
+			<label>
+				<input type="checkbox" name="Animation,AnimationQueue"/> 2D animations
+			</label>
+			<label>
+				<input type="checkbox" name="Cookies"/> cookies
+			</label>
+			<label>
+				<input type="checkbox" name="Storage"/> asynchronous localStorage
+			</label>
+		</div>
+		<p>
+			<button id="build" type="submit">Build it</button>
+		</p>
+	</form>
 
 
-    <p>A test of running r.js in the browser.</p>
-
-    <p>
-        <button id="build">Build it</button>
-    </p>
-
+    
+    
     <h2>Build Messages</h2>
     <textarea id="buildMessages"></textarea>
 
     <h2>Output</h2>
     <textarea id="output"></textarea>
+    
+    <script src="bower_components/r.js/dist/r.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script>
+    $(function() {
+    	
+    	var optimize = "none",
+    		modules = ["JSYG"],
+    		divMore = $('#more');
+    	
+    	$("[name=onlyjQuery]").on("change",function() {
+    		
+    		if (this.value == "yes" && this.checked) {
+    			divMore.hide("slow");
+    			modules = ["JSYG"];
+    		}
+    		else {
+    			divMore.show("slow");
+    			modules = ["JSYG","Utils"];
+    		}
+    		
+    	});
+    	   	
+    	
+    	$('form').on('submit', function(e) {
+    		
+    		e.preventDefault();
+    		
+    		requirejs.optimize({
+    			baseUrl: 'src',
+    			include: modules,
+    			optimize: optimize,
+                out: function(text) {
+                	document.getElementById('output').value = text;
+                }}, function (buildText) {
+                    document.getElementById('buildMessages').value = buildText;
+                });
+    		
+    	});
+    	
+    },false);
+    
+    </script>
 </body>
 </html>

@@ -19,6 +19,8 @@ define(["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JS
 			
 		url : null,
 		
+		key : 'id',
+		
 		sendJSON : true,
 		
 		onchange : null,
@@ -57,7 +59,7 @@ define(["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JS
 		save : function() {
 			
 			var that = this,
-				id = this.get('id'),
+				id = this.get(this.key),
 				url = this._getUrl(),
 				promise;
 			
@@ -87,7 +89,7 @@ define(["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JS
 		fetch : function() {
 			
 			var that = this,
-				id = this.get('id'),
+				id = this.get(this.key),
 				url = this._getUrl(),
 				promise;
 			
@@ -115,11 +117,11 @@ define(["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JS
 		destroy : function() {
 			
 			var that = this,
-				id = this.get('id'),
+				id = this.get(this.key),
 				url = this._getUrl(),
 				promise;
 			
-			if (!id) throw new Error("l'id n'a pas été défini.");
+			if (!id) throw new Error("la clef n'a pas été défini.");
 		
 			if (url) {
 				

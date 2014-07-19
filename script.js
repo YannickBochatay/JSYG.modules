@@ -1,12 +1,4 @@
-require.config({
-	baseUrl:"src",
-	paths: {
-		"jquery": '../bower_components/jquery/dist/jquery'
-	},
-	urlArgs: "bust=" + new Date()
-});
-
-define(["JSYG","Transform","Utils"],function(JSYG) {
+JSYG(function() {
 			
 	var svg = new JSYG('<svg>')
 	.width(400).height(400)
