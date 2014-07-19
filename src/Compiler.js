@@ -1,4 +1,4 @@
-(function() {
+define(["JSYG","String"],function(JSYG) {
 	
 	"use strict";
 		
@@ -19,6 +19,8 @@
 		this._jsContent = '';
 		this._cssContent = '';
 	}
+	
+	Compiler.prototype.constructor = Compiler;
 	
 	Compiler.prototype.compilation_level = "SIMPLE_OPTIMIZATIONS";
 	
@@ -259,4 +261,6 @@
 	
 	JSYG.compiler = new Compiler();
 	
-}());
+	return JSYG.compiler;
+	
+});

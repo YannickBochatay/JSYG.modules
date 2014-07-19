@@ -1,4 +1,4 @@
-(function(){
+define(["JSYG"],function(JSYG){
 	
 	"use strict";
 	
@@ -603,4 +603,6 @@
 		return new JSYG.Color().random().toString();
 	};
 	
-}());
+	return JSYG.Color;
+	
+});

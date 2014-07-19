@@ -1,4 +1,4 @@
-require(["Animation","StdConstruct"],function() {
+require(["JSYG","Animation","StdConstruct"],function(JSYG) {
 	
 	"use strict";
 	

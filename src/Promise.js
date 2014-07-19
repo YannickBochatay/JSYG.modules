@@ -1,10 +1,10 @@
 //tiré de https://github.com/jakearchibald/es6-promise
-(function(root) {
+define(["JSYG"],function(JSYG) {
 	
 	"use strict";
 				
-	if (root.Promise) {
-		JSYG.Promise = root.Promise;
+	if (window.Promise) {
+		JSYG.Promise = window.Promise;
 		return JSYG.Promise;
 	}
 	
@@ -15,8 +15,7 @@
 	var scheduleFlush = (function() {
 
 		var browserGlobal = (typeof window !== 'undefined') ? window : {},
-			BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver,
-			local = (typeof root.global !== 'undefined') ? root.global : (this === undefined ? window : this);
+			BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
 		
 		// node
 		function useNextTick() {
@@ -42,7 +41,7 @@
 
 		function useSetTimeout() {
 			return function() {
-				local.setTimeout(flush, 1);
+				window.setTimeout(flush, 1);
 			};
 		}
 
@@ -370,4 +369,4 @@
 	
 	return JSYG.Promise;
 
-}(this));
+});

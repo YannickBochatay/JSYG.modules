@@ -1,4 +1,4 @@
-(function() {
+define(["JSYG"],function(JSYG) {
 	
 	"use strict";
 	
@@ -395,4 +395,6 @@
 	    return true;
 	};
 	
-}());
+	return JSYG.String;
+	
+});

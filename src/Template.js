@@ -8,7 +8,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-(function(root) {
+define(["JSYG"],function(JSYG) {
 	
   "use strict";
 
@@ -607,7 +607,7 @@ function matchClosing(input, tagname, html) {
       // the result of the file system.
       if (!/<[^<]+?>/.test(plates) && !exports.cache[plates]) {
         // figure out if we are running in Node.js or a browser
-        if ('document' in root && 'getElementById' in root.document) {
+        if ('document' in window && 'getElementById' in window.document) {
           exports.cache[plates] = document.getElementById(plates).innerHTML;
         } else {
           exports.cache[plates] = require('fs').readFileSync(
@@ -652,6 +652,5 @@ function matchClosing(input, tagname, html) {
   JSYG.template.Map = Mapper;
   
   return JSYG.template;
-  
-  
-}(this));
+    
+});

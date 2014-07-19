@@ -1,4 +1,4 @@
-require(["StdContruct"],function() {
+define(["JSYG","StdConstruct","Promise"],function(JSYG) {
 	
 	"use strict";
 	
@@ -339,5 +339,7 @@ require(["StdContruct"],function() {
 			}
 		});
 	};
+	
+	return JSYG.Ajax;
 	
 });

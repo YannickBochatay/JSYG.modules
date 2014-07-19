@@ -1,4 +1,4 @@
-require(["Transform","Promise","Path"],function() {
+require(["JSYG","Style","Promise","Path","Color","StdConstruct"],function(JSYG) {
 	
 	"use strict";
 	

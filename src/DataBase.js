@@ -1,4 +1,4 @@
-require([ "JSYG", "StdConstruct", "Promise" ], function(JSYG) {
+define([ "JSYG", "StdConstruct", "Promise" ], function(JSYG) {
 
 	"use strict";
 	

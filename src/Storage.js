@@ -1,4 +1,4 @@
-(function() {
+define(["JSYG"],function(JSYG) {
 	   
     // Originally found in https://github.com/mozilla-b2g/gaia/blob/e8f624e4cc9ea945727278039b3bc9bcb9f8667a/shared/js/async_storage.js
 
@@ -219,4 +219,5 @@
 	 */
     JSYG.storage = new Storage();
     
-})();
+    return JSYG.storage;
+});

@@ -52,4 +52,6 @@ define(["JSYG"],function(JSYG) {
 	 */
 	JSYG.Vect.prototype.dot = function(vect) { return (this.x * vect.x) + (this.y * vect.y); };
 	
+	return JSYG.Vect;
+	
 });

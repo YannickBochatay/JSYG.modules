@@ -1,5 +1,5 @@
 //http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
-(function() {
+define(["JSYG","StdConstruct"],function(JSYG) {
 	
 	"use strict";
 	
@@ -12,7 +12,7 @@
 		this.routes = [];
 	}
 	
-	Router.prototype = new JSYG.StdContruct();
+	Router.prototype = new JSYG.StdConstruct();
 	
 	Router.prototype.root = '/';
 	
@@ -128,4 +128,4 @@
 	
 	return JSYG.router;
 	
-}());
+});
