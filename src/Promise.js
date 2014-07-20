@@ -1,5 +1,5 @@
 //tiré de https://github.com/jakearchibald/es6-promise
-define(["JSYG"],function(JSYG) {
+define("Promise",["JSYG"],function(JSYG) {
 	
 	"use strict";
 				

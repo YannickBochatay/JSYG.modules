@@ -1,4 +1,4 @@
-define(["JSYG","Date"],function() {
+define("Cookies",["JSYG","Date"],function() {
 	
 	"use strict";
 	

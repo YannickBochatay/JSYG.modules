@@ -1,4 +1,4 @@
-define(["JSYG"],function(JSYG){
+define("Color",["JSYG"],function(JSYG){
 	
 	"use strict";
 	

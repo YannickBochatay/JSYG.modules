@@ -1,4 +1,4 @@
-define(["JSYG","String"],function(JSYG) {
+define("Compiler",["JSYG","Promise","Ajax"],function(JSYG) {
 	
 	"use strict";
 		
@@ -32,7 +32,7 @@ define(["JSYG","String"],function(JSYG) {
 		
 		var data = "compilation_level="+this.compilation_level
 			+"&output_format="+this.output_format
-			+"&js_code="+JSYG.urlencode(str);
+			+"&js_code="+encodeURIComponent(str);
 		
 		this.output_info.forEach(function(info){
 			data+="&output_info="+info;

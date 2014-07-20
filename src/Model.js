@@ -1,4 +1,4 @@
-define(["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JSYG) {
+define("Model",["JSYG","Promise","StdConstruct","Storage","Ajax","DataBase"],function(JSYG) {
 	
 	function addSlash(url) {
 		

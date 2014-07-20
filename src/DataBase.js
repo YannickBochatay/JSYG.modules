@@ -1,4 +1,4 @@
-define([ "JSYG", "StdConstruct", "Promise" ], function(JSYG) {
+define("Database",["JSYG","StdConstruct","Promise"], function(JSYG) {
 
 	"use strict";
 	

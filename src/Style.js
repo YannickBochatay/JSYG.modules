@@ -1,4 +1,4 @@
-define(["JSYG","Matrix","Vect"],function(JSYG) {
+define("Style",["JSYG","Matrix","Vect"],function(JSYG) {
 	
 	"use strict";
 	

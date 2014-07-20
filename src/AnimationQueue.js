@@ -1,4 +1,4 @@
-require(["JSYG","Animation","StdConstruct"],function(JSYG) {
+define("AnimationQueue",["JSYG","Animation","StdConstruct"],function(JSYG) {
 	
 	"use strict";
 	

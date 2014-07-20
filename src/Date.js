@@ -1,4 +1,4 @@
-define(["JSYG"],function(JSYG) {
+define("Date",["JSYG"],function(JSYG) {
 	
 	"use strict";
 	/* 

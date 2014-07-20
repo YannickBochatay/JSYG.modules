@@ -1,24 +1,4 @@
-/*(function(root, factory) {
-
-	var $ = root.jQuery;
-	
-	if (typeof define == 'function' && define.amd) {
-		
-		if (!$) {
-									
-			define(['jquery'], function($) {
-				return factory(root,$);
-			});
-		}
-		else define(function() {
-			return factory(root,$);
-		});
-	}
-	else factory(root,$);
-
-}(this, function(window, $) {
-*/
-define("JSYG",[],function() {
+define("JSYG",["jquery"],function(jQuery) {
 			
 	"use strict";
 	
@@ -805,5 +785,4 @@ define("JSYG",[],function() {
 	
 	return JSYG;
 	
-//}));
 });

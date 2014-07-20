@@ -1,4 +1,4 @@
-define(["JSYG"],function(JSYG) {
+define("Path",["JSYG"],function(JSYG) {
 	
 	"use strict";
 	

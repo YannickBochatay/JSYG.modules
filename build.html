@@ -11,10 +11,13 @@
     <h1>JSYG custom builder</h1>
 	<form>
 		<label>
-			<input type="radio" name="onlyjQuery" value="yes"/> I just want jQuery compatibility for SVG.
+			<input type="radio" name="type" value="jQuery"/> I just want to make jQuery compatible with SVG.
 		</label>
 		<label>
-			<input type="radio" name="onlyjQuery" value="no" checked="checked"/> I want more.
+			<input type="radio" name="type" value="Utils" checked="checked"/> I want JSYG utilities.
+		</label>
+		<label>
+			<input type="radio" name="type" value="More" checked="checked"/> I want more.
 		</label>
 		
 		<div id="more">
@@ -58,14 +61,18 @@
     		modules = ["JSYG"],
     		divMore = $('#more');
     	
-    	$("[name=onlyjQuery]").on("change",function() {
+    	$("[name=type]").on("change",function() {
     		
-    		if (this.value == "yes" && this.checked) {
-    			divMore.hide("slow");
+    		if ((this.value == "jQuery" || this.value == "Utils") && this.checked) {
+    			
+    			divMore.hide("fast");
     			modules = ["JSYG"];
+    			
+    			if (this.value == "Utils") modules.push("Utils");
     		}
     		else {
-    			divMore.show("slow");
+    			
+    			divMore.show("fast");
     			modules = ["JSYG","Utils"];
     		}
     		

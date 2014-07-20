@@ -1,5 +1,5 @@
 //http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
-define(["JSYG","StdConstruct"],function(JSYG) {
+define("Router",["JSYG","StdConstruct"],function(JSYG) {
 	
 	"use strict";
 	
