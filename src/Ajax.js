@@ -79,9 +79,9 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 	 */
 	JSYG.Ajax.prototype.data = null;
 	/**
-	 * Envoie les données en format binaire (ou texte sinon)
+	 * Format d'envoi des données (urlencoded,json,text,formData,binary)
 	 */
-	JSYG.Ajax.prototype.binary = false;
+	JSYG.Ajax.prototype.dataType = "urlencoded";
 	/**
 	 * Format de réponse (optionnel) text, xml, json, jsonp. Si non précisé, tentera json puis xml et enfin text.
 	 */
@@ -163,22 +163,60 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 	*/
 	JSYG.Ajax.prototype.addData = function(name,value) {
 		
-		var i=null;
-				
-		if (rDataMethod.test(this.method) && window.FormData && !this.data) this.data = new FormData();
+		var i;
 		
 		if (JSYG.isPlainObject(name) && value == null) {
 			for (i in name) this.addData(i,name[i]);
 			return this;
 		}
 		
-		if (this.data instanceof window.FormData) this.data.append(name,value);
-		else {
-			this.data = this.data ? this.data+'&' : '';
-			this.data+= name+'='+ JSYG.urlencode( value );
-		}
-				
+		if (!this.data) this.data = {};
+		
+		this.data[name] = value;
+		
 		return this;
+	};
+	
+	JSYG.Ajax.prototype._processData = function() {
+		
+		if (!this.data) return '';
+		
+		if (["post","put"].indexOf(this.method.toLowerCase()) == -1)
+			return (typeof this.data == "string") ? this.data : JSYG.param(this.data);
+		
+		switch (this.dataType) {
+		
+			case "formData" :
+				
+				var formData = new FormData();
+				
+				if (!JSYG.isPlainObject(this.data))
+					throw new TypeError( (typeof this.data)+" : type incorrect pour dataType formData");
+				
+				for (var n in this.data) formData.append(n,this.data[n]);
+				
+				this.addHeader('Content-Type','multipart/form-data');
+				return formData;
+				
+			case "text" :
+				this.addHeader('Content-Type','text/plain');
+				return this.data;
+				
+			case "json" :
+				this.addHeader('Content-Type', 'application/json');
+				return JSON.stringify(this.data);
+				
+			case "binary":
+				if (typeof this.data != "string")
+					throw new TypeError( (typeof this.data)+" : type incorrect pour dataType binary");
+				return this.data;
+			
+			default : {
+				this.addHeader('Content-Type', 'application/x-www-form-urlencoded');
+				return (typeof this.data == "string") ? this.data : JSYG.param(this.data);
+			}
+		}
+		
 	};
 	
 	JSYG.Ajax.prototype._processResponse = function(resolve,reject) {
@@ -189,7 +227,7 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 		this.trigger('change',req);
 
 		if (req.readyState !== 4) return;
-		
+				
 		this.trigger('end',req);
 		
 		switch (this.format) {
@@ -231,18 +269,18 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 		}
 		
 		this.trigger('load',req,content);
-		
-			//local files
-		if (req.status == 0 || req.status >= 200 && req.status < 300 || req.status === 304) {
+				
+		if (req.status >= 200 && req.status < 300 || req.status === 304) {
 			
 			this.trigger('success',req,content);
-			resolve(content);
+			resolve(content,req);
 		}
 		else {
 			
 			if (!content) content = req.statusText;
 			this.trigger('error',req,content);
-			reject(new Error(content));
+						
+			reject( JSYG.extend( new Error(content),req ) );
 		}
 	};
 	
@@ -261,7 +299,8 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 			url = this.url,
 			callbackName,
 			regCallback,
-			matches;
+			matches,
+			data = that._processData();
 		
 		if (!this.format || this.format == "jsonp") {
 			
@@ -280,6 +319,8 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 					else url = url + URLdelimiter(url) + 'callback='+callbackName;
 				}
 				
+				url+= URLdelimiter(url) + data;
+				
 				this.req = null;
 				
 				return JSYG.loadJSFile(url, null, true);
@@ -291,16 +332,13 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 		return new JSYG.Promise(function(resolve,reject) {
 		
 			var method = that.method.toUpperCase(),
-				data, i,
-				req = that.req;
+				i, req = that.req;
 											
 			if (that.binary) method = 'POST';
 								
 			if (req.overrideMimeType) req.overrideMimeType('text/xml');
-			
-			data = that.data;
 						
-			if (method === 'GET' && data) {
+			if (method == 'GET' && data) {
 				url+= URLdelimiter(url) + data;
 				data = null;
 			}
@@ -319,24 +357,18 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 				if (that.onuploadload) req.upload.onload = function(e) { that.trigger('uploadload',that.req,e); };
 			}
 			
-			//entêtes http
-			for (i in that._headers) req.setRequestHeader(i,that._headers[i]);
+			req.onreadystatechange = that._processResponse.bind(that,resolve,reject);
+			req.onabort = reject;
 										
 			req.open(method, url, true);
 			
-			req.onreadystatechange = that._processResponse.bind(that,resolve,reject);
-			req.onabort = reject;
+			//entêtes http
+			for (i in that._headers) req.setRequestHeader(i,that._headers[i]);
 			
 			that.trigger('start',req);
 			
-			if (that.binary && req.sendAsBinary) req.sendAsBinary(data);
-			else {
-				
-				if (rDataMethod.test(method) && typeof data == "string")
-					req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-				
-				req.send(data);
-			}
+			if (that.dataType == "binary") req.sendAsBinary(data);
+			else req.send(data);
 		});
 	};
 	
