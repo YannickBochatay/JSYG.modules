@@ -222,7 +222,8 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 	JSYG.Ajax.prototype._processResponse = function(resolve,reject) {
 				
 		var content = null,
-			req = this.req;
+			req = this.req,
+			error;
 		
 		this.trigger('change',req);
 
@@ -279,8 +280,12 @@ define("Ajax",["JSYG","StdConstruct","Promise"],function(JSYG) {
 			
 			if (!content) content = req.statusText;
 			this.trigger('error',req,content);
+			
+			error = new Error(content);
+			error.status = req.status;
+			error.statusText = req.statusText;
 						
-			reject( JSYG.extend( new Error(content),req ) );
+			reject(error);
 		}
 	};
 	
