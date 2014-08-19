@@ -9,7 +9,7 @@
 		files = [],
 		inProgress = false,
 		preventInfiniteLoop=0,
-		currentScript,
+		//currentScript,
 		config = {
 			baseURL:getCurrentPath(),
 			urlArgs:null,
@@ -246,27 +246,17 @@
 		return path.replace(regsNormalize[1],'/');
 	}
 	
-	function require(file) {
+	function require(deps,callback) {
 		
 		var a = slice.call(arguments),
-			callback,
-			ext,i,N=a.length;
-				
-		if (typeof a[N-1] == 'function') {
-			callback = a[N-1];
-			a.pop();
-			N--;
-		}
-		else callback = null;
+			ext,i,N;
 		
-		if (Array.isArray(a[0])) {
-			a = a[0];
-			N = a.length;
-		}
-		else if (Array.isArray(a[1])) {
-			a = a[1];
-			N = a.length;
-		}
+		if (Array.isArray(a[0]))deps = a[0];
+		else if (Array.isArray(a[1])) deps = a[1];
+		
+		callback = (typeof a[N-1] == 'function') ? a[N-1] : null;
+		
+		N = deps.length;
 									
 		for (i=0;i<N;i++) {
 			
@@ -306,7 +296,15 @@
 			
 	window.require = require;
 	
-	//window.define = require;
+	window.define = function(moduleName,deps,callback) {
+		if (Array.isArray(moduleName)) {
+			deps = moduleName;
+			callback = deps;
+		}
+		
+		return require(deps,callback);
+	};
+	
 	//window.define.amd = {};
 	
 	var main = getCurrentScript().getAttribute('data-main');
